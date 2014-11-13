@@ -1,0 +1,86 @@
+Generation notes:
+
+Want to mess around with generator project, not really sure what I’m looking to do
+
+Ideas:
+* something similar to the project from a while back that got wiped, that created a 2d world populated w creatures
+* something to use key/lock mechanisms
+* something with multiple levels of resolution - e.g., high abstraction and then successive levels of detail
+
+* would be neat to have some open worldish elements, but intertwined with generated spaces
+- mostly 2d, but some 3d elements (eg, multi-level rooms)
+- maybe have some landmarks exist in space that can be identified even without explicit path generated to it
+
+* can do either pre-gen, or gen-as-you-go. The former would provide a bit more control.
+
+* games to reference:
+- zelda, metroid, castlevania & ilk
+- shadow of the collosus/ico for style, 
+- vagrant story
+- other dungeon crawlers
+
+* would be nice to have an abstract enough system to be able to handle generation as a graph solving problem, but would still need to handle constraints of space
+
+* we might also want to address some things via shape grammar logic: start with an allocated chunk of space and then break down - this can lead to area hierarchies (think metroid zones, but on smaller scale); could interact well with more open world elements
+
+* In terms of development, start with one level and work out, but design for abstraction.
+
+
+Logical organization:
+
+Type
+- e.g Room, Floor (subset of space), Building, Town (geographic region), Planet (who knows)
+
+InProgressWorld<Type?> (intermediate stage for generation process)
+- Floor/Building would be the World for a Room
+- contains parameter information that room templates need to generate contents
+- contains in-progress rooms, connections
+- has space constraints of what rooms are needed to fill
+- has generator parameters of what rooms should go inside (including outside connections, any objects that need to be created in sub-rooms, etc)
+- contains room generator
+- current available negative geometry
+
+RoomGenerator<Type>
+- contains all available room templates, connection templates
+- contains all logic for building based on world, constraints, etc
+- weights & priorities for rooms (and connections?)
+
+Room<Type> (generated)
+- parent,
+- location, seeding information
+- contents (objects inside, geometry, walls, sub-rooms)
+- interface/connection points and types, including connections to outside world/parent room
+- top level room would have no parent and would be the full world
+
+RoomTemplate<Type>
+- how to generate room, given position, existing world
+- allowable connection types (and locations)
+- allowable geometries (eg, hallway can be 
+- allowable objects; object generation patterns (may be parameterized)
+- render into an actual Room<Type> given a transformation of the appropriate kind
+
+ConnectionTemplate<Type>
+- key configurations needed to move through this
+- type
+- types of connections that may attach to this
+- whether it may attach to outside/parent level
+- how to generate the appropriate connection given adjacent rooms
+- maybe the connection gets to draw in the 
+
+Geometry<Type>
+- defines the *shape* of a room/space.
+- geometry can change and be in progress
+- need to think of geometry in terms of positives and negatives (have a volume and can fill up the volume with smaller volumes)
+- so geometry can be unioned/differenced
+
+
+———
+Barebones generation process:
+
+start w world (has params)
+
+choose a random room template from those available, given priorities/weights (in future, some of these might be planned- i.e., there has to be an X here)
+Tests:
+- can it fit in the space available (with a rotation and translation)? : size it to the largest geometry it will allow
+- can it interface with the existing connections? (plan to instantiate connections at the right places)
+
