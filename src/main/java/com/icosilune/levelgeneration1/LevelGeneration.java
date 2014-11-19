@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import math.Transformation3i;
-import math.Volume3i;
+import math3i.Transformation3i;
+import math3i.Volume3i;
 
 /**
  *
@@ -93,5 +93,4 @@ public class LevelGeneration {
 
     return ImmutableList.copyOf(validTranslations).get(random.nextInt(validTranslations.size()));
   }
-
 }

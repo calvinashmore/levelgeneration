@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package math;
+package math3i;
 
+import math3i.Transformation3i;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
