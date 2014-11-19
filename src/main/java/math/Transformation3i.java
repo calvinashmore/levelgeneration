@@ -6,123 +6,119 @@
 package math;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a (linear) transformation on {@link Point3i}s
  */
-public abstract class Transformation3i implements Function<Point3i, Point3i> {
+public class Transformation3i implements Function<Point3i, Point3i> {
 
-  public static final Transformation3i IDENTITY = new Transformation3i() {
-    @Override
-    public Point3i apply(Point3i v) {
-      return v;
-    }
-  };
+  public static final Transformation3i IDENTITY =
+          new Transformation3i(new int[] {1,0,0,0, 0,1,0,0, 0,0,1,0});
 
-  public abstract Point3i apply(Point3i v);
+  public static final Transformation3i REFLECTION_X =
+          new Transformation3i(new int[] {-1,0,0,0, 0,1,0,0, 0,0,1,0});
+  public static final Transformation3i REFLECTION_Y =
+          new Transformation3i(new int[] {1,0,0,0, 0,-1,0,0, 0,0,1,0});
+  public static final Transformation3i REFLECTION_Z =
+          new Transformation3i(new int[] {1,0,0,0, 0,1,0,0, 0,0,-1,0});
 
-  public static Transformation3i translation(final Point3i offset) {
-    return new Transformation3i() {
-      @Override
-      public Point3i apply(Point3i v) {
-        return offset.add(v);
-      }
-    };
+  public static Transformation3i translation(int tx, int ty, int tz) {
+    return new Transformation3i(new int[] {1,0,0,tx, 0,1,0,ty, 0,0,1,tz});
   }
 
-  public static Transformation3i translation(int dx, int dy, int dz) {
-    return translation(Point3i.create(dx, dy, dz));
-  }
-
-  public static final Transformation3i REFLECTION_X = perAxisScale(-1, 0, 0);
-  public static final Transformation3i REFLECTION_Y = perAxisScale(0, -1, 0);
-  public static final Transformation3i REFLECTION_Z = perAxisScale(0, 0, -1);
-
-  public static Transformation3i perAxisScale(final int sx, final int sy, final int sz) {
-    return new Transformation3i() {
-      @Override
-      public Point3i apply(Point3i v) {
-        return Point3i.create(sx*v.getX(), sy*v.getY(), sz*v.getZ());
-      }
-    };
+  public static Transformation3i translation(Point3i v) {
+    return translation(v.getX(), v.getY(), v.getZ());
   }
 
   /**
-   * transformations F, G:
-   * F.compose(G).apply(x) = FGx
+   * Rotate about the z axis in the given number of 90 degree increments.
    */
-  public Transformation3i compose(Transformation3i inner) {
-    return new Composition(inner, this);
-  }
+  public static Transformation3i rotationZ(int increments) {
+    int floorIncrements = (increments % 4 + 4) %4;
 
-  private static final class Composition extends Transformation3i {
+    Transformation3i base = new Transformation3i(
+            new int[] {0,1,0,0, -1,0,0,0, 0,0,1,0});
 
-    private final Transformation3i first, second;
+    Transformation3i t = IDENTITY;
+    for(int angle = 0; angle < floorIncrements; angle++)
+      t = t.compose(base);
 
-    /**
-     * The {@code first} transformation is applied first.
-     */
-    public Composition(Transformation3i first, Transformation3i second) {
-      this.first = first;
-      this.second = second;
-    }
-
-
-    @Override
-    public Point3i apply(Point3i v) {
-      return second.apply(first.apply(v));
-    }
+    return t;
   }
 
   /**
-   * Represents a rotation in 90 degree increments
+   * This has the shape of an affine translation matrix for 3d space.
+   * [A0  A1  A2  A3 ]
+   * [A4  A5  A6  A7 ]
+   * [A8  A9  A10 A11]
+   * [0   0   0   1  ]
    */
-  public enum RotationAngle {
-    ANGLE_0(1,0),
-    ANGLE_90(0,1),
-    ANGLE_180(-1,0),
-    ANGLE_270(0,-1);
+  private final int[] A = new int[12];
 
-    private final int cos, sin;
-    private RotationAngle(int cos, int sin) {
-      this.cos = cos;
-      this.sin = sin;
-    }
+  private Transformation3i(int xform[]) {
+    Preconditions.checkArgument(xform.length == 12);
+    System.arraycopy(xform, 0, this.A, 0, 12);
   }
 
-  public enum Axis {
-    X, Y, Z
+  @Override
+  public Point3i apply(Point3i v) {
+    return Point3i.create(
+        A[0]*v.getX() + A[1]*v.getY() + A[2]*v.getZ() + A[3],
+        A[4]*v.getX() + A[5]*v.getY() + A[6]*v.getZ() + A[7],
+        A[8]*v.getX() + A[9]*v.getY() + A[10]*v.getZ() + A[11]);
   }
 
-  public Transformation3i rotationZ(Axis axis, RotationAngle angle) {
-    if(angle == RotationAngle.ANGLE_0)
-      return IDENTITY;
-    return new Rotation(axis, angle);
+  /**
+   * The resulting xform will be this * other * v
+   */
+  public Transformation3i compose(Transformation3i other) {
+    int[] B = other.A;
+
+    //Cij = sum(k, Aik * Bkj
+    return new Transformation3i(new int[] {
+      A[0]*B[0] + A[1]*B[4] + A[2]*B[8],
+      A[0]*B[1] + A[1]*B[5] + A[2]*B[9],
+      A[0]*B[2] + A[1]*B[6] + A[2]*B[10],
+      A[0]*B[3] + A[1]*B[7] + A[2]*B[11] + A[3],
+
+      A[4]*B[0] + A[5]*B[4] + A[6]*B[8],
+      A[4]*B[1] + A[5]*B[5] + A[6]*B[9],
+      A[4]*B[2] + A[5]*B[6] + A[6]*B[10],
+      A[4]*B[3] + A[5]*B[7] + A[6]*B[11] + A[7],
+
+      A[8]*B[0] + A[9]*B[4] + A[10]*B[8],
+      A[8]*B[1] + A[9]*B[5] + A[10]*B[9],
+      A[8]*B[2] + A[9]*B[6] + A[10]*B[10],
+      A[8]*B[3] + A[9]*B[7] + A[10]*B[11] + A[11],
+    });
   }
 
-  private static final class Rotation extends Transformation3i {
-
-    private final Axis axis;
-    private final RotationAngle angle;
-
-    public Rotation(Axis axis, RotationAngle angle) {
-      this.axis = axis;
-      this.angle = angle;
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Transformation3i) {
+      Transformation3i that = (Transformation3i) obj;
+      return Arrays.equals(this.A, that.A);
     }
+    return false;
+  }
 
-    @Override
-    public Point3i apply(Point3i v) {
-      int x = v.getX();
-      int y = v.getY();
-      int z = v.getZ();
-      int c = angle.cos;
-      int s = angle.sin;
-      switch(axis) {
-        case X: return Point3i.create(x, c*y + s*z, c*z - s*z);
-        case Y: return Point3i.create(c*x + s*z, y, c*z - s*x);
-        case Z: return Point3i.create(c*x - s*y, c*y + s*x, z);
-        default: throw new IllegalArgumentException(""+axis);
-      }
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash((Object) A);
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+           "[%d %d %d %d]\n"
+         + "[%d %d %d %d]\n"
+         + "[%d %d %d %d]\n"
+         + "[0 0 0 1]",
+            A[0], A[1], A[2], A[3],
+            A[4], A[5], A[6], A[7],
+            A[8], A[9], A[10], A[11]);
   }
 }

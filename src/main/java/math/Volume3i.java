@@ -28,7 +28,7 @@ public class Volume3i {
     for(int x = 0; x < wx; x++)
     for(int y = 0; y < wy; y++)
     for(int z = 0; z < wz; z++)
-      points.add(Point3i.create(wx, wy, wz));
+      points.add(Point3i.create(x, y, z));
     return new Volume3i(points);
   }
 
@@ -112,6 +112,11 @@ public class Volume3i {
    * Return a point whose coordinates correspond to the dimensions of this volume.
    */
   public Point3i getDimensions() {
+
+    if(points.isEmpty()) {
+      return Point3i.ZERO;
+    }
+
     Point3i min = getMinimum();
     Point3i max = getMaximum();
     // we have to add 1 to the end, otherwise a singleton would have dimensions of zero.
@@ -131,12 +136,11 @@ public class Volume3i {
   }
 
   /**
-   * Returns one (of perhaps many) translations that can be used to maneuver the
+   * Returns all translations that can be used to maneuver the
    * given volume so that it is wholly contained by this volume.
    */
   // @Nullable
-  public Transformation3i canContainWithTranslation(Volume3i volume) {
-    // brute force
+  public Set<Transformation3i> getValidTranslations(Volume3i volume) {
 
     Point3i thisMinimum = this.getMinimum();
     Point3i thisMaximum = this.getMaximum();
@@ -152,8 +156,35 @@ public class Volume3i {
     int thatSizeY = thatMaximum.getY() - thatMinimum.getY();
     int thatSizeZ = thatMaximum.getZ() - thatMinimum.getZ();
 
+    /*
+
+    consider 1d case
+
+    suppose min = 0
+
+    then values to test: [0, container.max - contained.max] // inclusive
+
+    can translate container to 0 by using -min
+    can translate contained to 0 by using -min
+
+    */
+
+    Transformation3i base = Transformation3i.translation(thisMinimum)
+            .compose(Transformation3i.translation(thatMinimum.multiply(-1)));
+
+
+    ImmutableSet.Builder<Transformation3i> results = ImmutableSet.builder();
+    // TODO: deal with this some way other than brute force
+    for(int x = 0; x <= thisSizeX - thatSizeX; x++)
+      for(int y = 0; y <= thisSizeY - thatSizeY; y++)
+        for(int z = 0; z <= thisSizeZ - thatSizeZ; z++) {
+          Transformation3i t = base.compose(Transformation3i.translation(x, y, z));
+          if(this.contains(volume.transform(t)))
+            results.add(t);
+        }
+
     // can do some checks in case the size is way off
-    throw new UnsupportedOperationException();
+    return results.build();
   }
 
   /**
