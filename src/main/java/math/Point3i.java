@@ -47,4 +47,9 @@ public abstract class Point3i {
         this.getY() * c,
         this.getZ() * c);
   }
+
+  @Override
+  public String toString() {
+    return String.format("<%d, %d, %d>", getX(), getY(), getZ());
+  }
 }

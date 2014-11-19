@@ -5,6 +5,7 @@
  */
 package com.icosilune.levelgeneration1;
 
+import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -39,6 +40,7 @@ public class LevelGeneration {
       System.out.println(box.getDimensions()+": at "+box.getMinimum());
     }
 
+    System.out.println("union size: "+Volume3i.union(packed.values()).size());
   }
 
   /**
@@ -72,6 +74,8 @@ public class LevelGeneration {
       if (t == null)
         continue;
 
+      box = box.transform(t);
+
       currentBoxes.put(t, box);
       union = union.union(box);
     }
@@ -79,14 +83,15 @@ public class LevelGeneration {
   }
 
   // returns null if cannot be found after some searching
-  private static Transformation3i findTransformation(Volume3i box, Volume3i toNotIntersect, Volume3i container, int maxSize) {
-    for(int i=0;i<100;i++){
-      Transformation3i t = Transformation3i.translation(random.nextInt(maxSize), random.nextInt(maxSize), random.nextInt(maxSize));
-      Volume3i transformed = box.transform(t);
-      if(!transformed.intersects(toNotIntersect) && container.contains(transformed))
-        return t;
-    }
-    return null;
+  private static Transformation3i findTransformation(
+          Volume3i box, Volume3i toNotIntersect, Volume3i container, int maxSize) {
+
+    Set<Transformation3i> validTranslations =
+            container.difference(toNotIntersect).getValidTranslations(box);
+    if(validTranslations.isEmpty())
+      return null;
+
+    return ImmutableList.copyOf(validTranslations).get(random.nextInt(validTranslations.size()));
   }
 
 }
