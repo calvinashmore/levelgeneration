@@ -72,6 +72,16 @@ public class Transformation3i implements Function<Point3i, Point3i> {
   }
 
   /**
+   * Applies the transformation to a vector (not a point), omitting the translation component.
+   */
+  public Point3i applyToVector(Point3i v) {
+    return Point3i.create(
+        A[0]*v.getX() + A[1]*v.getY() + A[2]*v.getZ(),
+        A[4]*v.getX() + A[5]*v.getY() + A[6]*v.getZ(),
+        A[8]*v.getX() + A[9]*v.getY() + A[10]*v.getZ());
+  }
+
+  /**
    * The resulting xform will be this * other * v
    */
   public Transformation3i compose(Transformation3i other) {

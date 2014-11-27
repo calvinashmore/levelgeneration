@@ -5,6 +5,7 @@
  */
 package com.icosilune.levelgeneration1;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import java.util.Map;
