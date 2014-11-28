@@ -24,5 +24,14 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
     return ImmutableList.copyOf(children);
   }
 
+  /**
+   * Return true if this in progress room can be successfully built.
+   */
+  public abstract boolean isValid();
+
+  /**
+   * Construct the actual room from this in-progress room. Throws an
+   * IllegalStateException if the room is not valid.
+   */
   abstract T build();
 }
