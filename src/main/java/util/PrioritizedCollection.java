@@ -15,6 +15,8 @@ import com.google.common.collect.Ordering;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
  * A collection of T that accounts for weights and priorities of entries.
@@ -28,11 +30,23 @@ public class PrioritizedCollection<T> {
     entries.add(Entry.create(value, weight, priority));
   }
 
+  public List<T> getAllValues() {
+    return entries.stream().map(Entry::getValue).collect(Collectors.toList());
+  }
+
+  /**
+   * Returns null iff the predicate is false for all entries.
+   */
+  @Nullable
   public T choose(Predicate<T> predicate, Random random) {
     Iterable<Entry<T>> filteredEntries = Iterables.filter(entries, t -> predicate.apply(t.getValue()));
     int maximumPriority = Ordering.natural().max(Iterables.transform(filteredEntries, Entry::getPriority));
     filteredEntries = Iterables.filter(filteredEntries,
             Predicates.compose(Predicates.equalTo(maximumPriority), Entry::getPriority));
+
+    if(Iterables.isEmpty(filteredEntries)) {
+      return null;
+    }
 
     double sum = 0;
     for(Entry<T> entry : filteredEntries)

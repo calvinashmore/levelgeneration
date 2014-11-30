@@ -18,6 +18,7 @@ public interface Geometry<T extends Room<T,?>> {
 
   public static interface ConnectionTransformation<T extends Room<T,?>> {
     ConnectionTransformation<T> transform(GeometryTransformation<T> xform);
+    boolean matches(ConnectionTransformation<T> other);
   }
 
   public static interface TransformedGeometry<T extends Room<T,?>> {

@@ -13,14 +13,17 @@ import generation.ConnectionTemplate;
  */
 public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
 
-  FOO
+  DOOR_1,
+  DOOR_2,
   ;
 
   @Override
   public boolean matches(ConnectionTemplate<P1Room> other) {
-    P1ConnectionTemplate other1 = (P1ConnectionTemplate) other;
+    if(other == null)
+      // null passes
+      return true;
 
-    // *****************
-    throw new UnsupportedOperationException();
+    P1ConnectionTemplate other1 = (P1ConnectionTemplate) other;
+    return other1 == this;
   }
 }

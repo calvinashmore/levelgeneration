@@ -41,7 +41,7 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     }
 
     @Override
-    public TransformedGeometry<P1Room> transform(Geometry<P1Room> geometry) {
+    public P1Geometry transform(Geometry<P1Room> geometry) {
       P1Geometry geometry1 = (P1Geometry) geometry;
       return P1Geometry.create(geometry1.getVolume().transform(getTransformation()));
     }
@@ -67,6 +67,13 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
               Point3i.UNIT_Y.multiply(-1),
               Point3i.UNIT_Z.multiply(-1)).contains(facing));
       return new AutoValue_P1Geometry_P1ConnectionTransformation(position, facing);
+    }
+
+    @Override
+    public boolean matches(ConnectionTransformation<P1Room> other) {
+      P1ConnectionTransformation other1 = (P1ConnectionTransformation) other;
+      return this.getPosition().add(this.getFacing()).equals(other1.getPosition())
+          && other1.getPosition().add(other1.getFacing()).equals(this.getPosition());
     }
 
     @Override

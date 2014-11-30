@@ -5,7 +5,7 @@
  */
 package generation;
 
-import com.google.common.base.Predicate;
+import java.util.List;
 import javax.annotation.Nullable;
 import util.PrioritizedCollection;
 
@@ -32,7 +32,7 @@ public abstract class RoomGenerator<Parent extends Room<Parent,T>, T extends Roo
     return templates;
   }
 
-  public abstract Predicate<RoomTemplate<T>> validRoomPredicate();
+  public abstract List<? extends Geometry.GeometryTransformation<T>> getPossibleTransformations(RoomTemplate<T> template);
 
   /**
    * Returns null if one cannot be generated.

@@ -24,11 +24,10 @@ public abstract class Room <T extends Room<T,Child>, Child extends Room<Child,?>
 
   public abstract RoomTemplate<T> getTemplate();
   public abstract ImmutableSet<Child> getChildren();
-  public abstract Geometry<T> getGeometry();
   public abstract Geometry.GeometryTransformation<T> getGeometryTransformation();
 
   public Geometry.TransformedGeometry<T> getTransformedGeometry() {
-    return getGeometryTransformation().transform(getGeometry());
+    return getGeometryTransformation().transform(getTemplate().getGeometry());
   }
 
   public Set<ConnectionTemplate.ConnectionPlacement<T>> getConnectionPlacements() {

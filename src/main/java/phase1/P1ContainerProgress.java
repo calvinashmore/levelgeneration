@@ -5,6 +5,7 @@
  */
 package phase1;
 
+import generation.Geometry;
 import generation.InProgressRoom;
 import math3i.Volume3i;
 
@@ -25,6 +26,10 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
     return filledRoomVolume;
   }
 
+  public Volume3i getFreeVolume() {
+    return getEnclosingVolume().difference(getFilledRoomVolume());
+  }
+
   @Override
   public void addChild(P1Room child) {
     super.addChild(child);
@@ -35,7 +40,7 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   public boolean isValid() {
     Volume3i childrenVolume = Volume3i.EMPTY;
     for(P1Room child : getChildren())
-      childrenVolume = childrenVolume.union(child.getGeometry().getVolume());
+      childrenVolume = childrenVolume.union(child.getTransformedGeometry().getVolume());
 
     return childrenVolume.equals(enclosingVolume);
   }
@@ -45,4 +50,9 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
     return P1Container.create(getChildren());
   }
 
+  @Override
+  public boolean geometryMatches(Geometry.TransformedGeometry<P1Room> geometry) {
+    P1Geometry geometry1 = (P1Geometry) geometry;
+    return getFreeVolume().contains(geometry1.getVolume());
+  }
 }

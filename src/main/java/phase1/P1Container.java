@@ -32,11 +32,6 @@ public abstract class P1Container extends Room<P1Container, P1Room>{
   }
 
   @Override
-  public Geometry<P1Container> getGeometry() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public Geometry.GeometryTransformation<P1Container> getGeometryTransformation() {
     throw new UnsupportedOperationException();
   }

@@ -33,5 +33,20 @@ public interface ConnectionTemplate<T extends Room<T,?>> {
             ConnectionTemplate<T> connection, Geometry.ConnectionTransformation<T> transform) {
       return new AutoValue_ConnectionTemplate_ConnectionPlacement(connection, transform);
     }
+
+    /**
+     * True if both the transforms and the types of the connections match.
+     */
+    public boolean matches(ConnectionPlacement<T> other) {
+      return other.getConnection().matches(this.getConnection())
+          && other.getTransform().matches(this.getTransform());
+    }
+
+    /**
+     * True if the transforms of the two connections match.
+     */
+    public boolean transformMatches(ConnectionPlacement<T> other) {
+      return other.getTransform().matches(this.getTransform());
+    }
   }
 }
