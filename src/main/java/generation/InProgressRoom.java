@@ -33,5 +33,5 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * Construct the actual room from this in-progress room. Throws an
    * IllegalStateException if the room is not valid.
    */
-  abstract T build();
+  public abstract T build();
 }

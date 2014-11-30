@@ -11,13 +11,15 @@ package generation;
  */
 public interface Geometry<T extends Room<T,?>> {
 
-
-
   public static interface GeometryTransformation<T extends Room<T,?>> {
-    public GeometryTransformation<T> transform(GeometryTransformation<T> xform);
+    GeometryTransformation<T> transform(GeometryTransformation<T> xform);
+    TransformedGeometry<T> transform(Geometry<T> geometry);
   }
 
   public static interface ConnectionTransformation<T extends Room<T,?>> {
-    public ConnectionTransformation<T> transform(GeometryTransformation<T> xform);
+    ConnectionTransformation<T> transform(GeometryTransformation<T> xform);
+  }
+
+  public static interface TransformedGeometry<T extends Room<T,?>> {
   }
 }

@@ -6,7 +6,8 @@
 package generation;
 
 import com.google.common.collect.ImmutableSet;
-import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Denotes a finished and rendered room.
@@ -21,7 +22,21 @@ public abstract class Room <T extends Room<T,Child>, Child extends Room<Child,?>
     private EmptyType() {}
   }
 
+  public abstract RoomTemplate<T> getTemplate();
   public abstract ImmutableSet<Child> getChildren();
   public abstract Geometry<T> getGeometry();
   public abstract Geometry.GeometryTransformation<T> getGeometryTransformation();
+
+  public Geometry.TransformedGeometry<T> getTransformedGeometry() {
+    return getGeometryTransformation().transform(getGeometry());
+  }
+
+  public Set<ConnectionTemplate.ConnectionPlacement<T>> getConnectionPlacements() {
+    Set<ConnectionTemplate.ConnectionPlacement<T>> placements = new HashSet<>();
+
+    getTemplate().getConnections().stream().forEach((placement) -> {
+      placements.add(placement.transform(getGeometryTransformation()));
+    });
+    return placements;
+  }
 }

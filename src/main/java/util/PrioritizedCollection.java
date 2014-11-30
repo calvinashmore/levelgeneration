@@ -6,7 +6,6 @@
 package util;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -30,10 +29,10 @@ public class PrioritizedCollection<T> {
   }
 
   public T choose(Predicate<T> predicate, Random random) {
-    Iterable<Entry<T>> filteredEntries = Iterables.filter(entries, entryPredicate(predicate));
-    int maximumPriority = Ordering.natural().max(Iterables.transform(filteredEntries, priorityFunction()));
+    Iterable<Entry<T>> filteredEntries = Iterables.filter(entries, t -> predicate.apply(t.getValue()));
+    int maximumPriority = Ordering.natural().max(Iterables.transform(filteredEntries, Entry::getPriority));
     filteredEntries = Iterables.filter(filteredEntries,
-            Predicates.compose(Predicates.equalTo(maximumPriority), priorityFunction()));
+            Predicates.compose(Predicates.equalTo(maximumPriority), Entry::getPriority));
 
     double sum = 0;
     for(Entry<T> entry : filteredEntries)
@@ -51,22 +50,6 @@ public class PrioritizedCollection<T> {
 
   public ImmutableList<Entry<T>> getEntries() {
     return ImmutableList.copyOf(entries);
-  }
-
-  private static <T> Predicate<Entry<T>> entryPredicate(final Predicate<T> basePredicate) {
-    return new Predicate<Entry<T>>() {
-      @Override public boolean apply(Entry<T> t) {
-        return basePredicate.apply(t.getValue());
-      }
-    };
-  }
-
-  private Function<Entry<T>, Integer> priorityFunction() {
-    return new Function<Entry<T>, Integer>() {
-      @Override public Integer apply(Entry<T> f) {
-        return f.getPriority();
-      }
-    };
   }
 
   @AutoValue

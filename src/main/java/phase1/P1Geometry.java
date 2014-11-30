@@ -9,6 +9,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import generation.Geometry;
+import generation.Geometry.TransformedGeometry;
 import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
@@ -18,7 +19,7 @@ import math3i.Volume3i;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1Geometry implements Geometry<P1Room> {
+public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometry<P1Room> {
   public abstract Volume3i getVolume();
 
   public static P1Geometry create(Volume3i volume) {
@@ -37,6 +38,12 @@ public abstract class P1Geometry implements Geometry<P1Room> {
     public P1GeometryTransformation transform(GeometryTransformation<P1Room> xform) {
       P1GeometryTransformation xform1 = (P1GeometryTransformation) xform;
       return create(this.getTransformation().compose(xform1.getTransformation()));
+    }
+
+    @Override
+    public TransformedGeometry<P1Room> transform(Geometry<P1Room> geometry) {
+      P1Geometry geometry1 = (P1Geometry) geometry;
+      return P1Geometry.create(geometry1.getVolume().transform(getTransformation()));
     }
   }
 

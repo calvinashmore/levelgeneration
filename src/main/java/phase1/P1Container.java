@@ -9,6 +9,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 import generation.Geometry;
 import generation.Room;
+import generation.RoomTemplate;
 
 /**
  *
@@ -26,12 +27,17 @@ public abstract class P1Container extends Room<P1Container, P1Room>{
   public abstract ImmutableSet<P1Room> getChildren();
 
   @Override
+  public RoomTemplate<P1Container> getTemplate() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public Geometry<P1Container> getGeometry() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Geometry.GeometryTransformation<P1Container> getGeometryTransformation() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 }

@@ -11,14 +11,13 @@ import java.util.Set;
  *
  * @author ashmore
  */
-public abstract class RoomTemplate<T extends Room<T,?>> {
+public interface RoomTemplate<T extends Room<T,?>> {
 
-  Geometry<T> geometry;
-  Set<ConnectionTemplate.ConnectionPlacement<T>> connections;
+  Geometry<T> getGeometry();
+  Set<ConnectionTemplate.ConnectionPlacement<T>> getConnections();
 
-
-  public static class RoomPlacement<T extends Room<T,?>> {
-    RoomTemplate<T> connection;
-    Geometry.GeometryTransformation<T> transform;
+  public interface RoomPlacement<T extends Room<T,?>> {
+    RoomTemplate<T> getConnection();
+    Geometry.GeometryTransformation<T> getTransform();
   }
 }
