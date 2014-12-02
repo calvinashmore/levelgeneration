@@ -14,7 +14,6 @@ import java.util.Random;
 import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -41,44 +40,22 @@ public class P1RoomGeneratorTest {
   @Test
   public void testGetPossibleTransformations() {
     P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(2, 1, 1));
-    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     PrioritizedCollection<P1RoomTemplate> templates = new PrioritizedCollection<>();
     templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
+
+    // add some doors
+    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
     List<P1Geometry.P1GeometryTransformation> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM);
 
     List<P1Geometry.P1GeometryTransformation> expectedTransformations = ImmutableList.of(
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(0)),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(1)),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(2)),
         P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(3)),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(0))),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(1))),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(2))),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(3)))
+        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(1)))
         );
 
-    // first check with no restrictions.
     Truth.assertThat(possibleTransformations).containsExactlyElementsIn(expectedTransformations);
-
-    // add some restrictions
-    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
-    possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM);
-
-    expectedTransformations = ImmutableList.of(
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(1)),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(3)))
-        );
-
-//    for(P1Geometry.P1GeometryTransformation xform : possibleTransformations) {
-//      System.out.println("translate: " + xform.getTransformation().apply(Point3i.ZERO));
-//    }
-//    System.out.println(possibleTransformations);
-    Truth.assertThat(possibleTransformations).containsExactlyElementsIn(expectedTransformations);
-
   }
 }

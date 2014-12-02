@@ -24,8 +24,9 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
   @Override
   public boolean matches(ConnectionTemplate<P1Room> other) {
     if(other == null)
-      // null does not pass
-      return false;
+      // note: I've waffled on this a few times; the correct behavior here is not really clear.
+      // null passes
+      return true;
 
     P1ConnectionTemplate other1 = (P1ConnectionTemplate) other;
     return other1 == this;
