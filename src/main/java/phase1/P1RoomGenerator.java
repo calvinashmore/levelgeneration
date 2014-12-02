@@ -5,25 +5,17 @@
  */
 package phase1;
 
-import com.google.auto.value.AutoValue;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-import generation.ConnectionTemplate.ConnectionPlacement;
-import generation.Geometry;
 import generation.InProgressRoom;
 import generation.RoomGenerator;
 import generation.RoomTemplate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
 import util.PrioritizedCollection;
@@ -34,10 +26,11 @@ import util.PrioritizedCollection;
  */
 public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
 
-  private final Random random = new Random();
+  private final Random random;
 
-  public P1RoomGenerator(InProgressRoom<P1Container, P1Room> inProgressParent, PrioritizedCollection<P1RoomTemplate> templates) {
+  public P1RoomGenerator(P1ContainerProgress inProgressParent, PrioritizedCollection<P1RoomTemplate> templates, Random random) {
     super(inProgressParent, templates);
+    this.random = random;
   }
 
   @Override
@@ -70,7 +63,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
       for (Transformation3i translation
               : getInProgressParent().getFreeVolume()
               .getValidTranslations(templateVolume.transform(rotation))) {
-        validTransformations.add(rotation.compose(translation));
+        validTransformations.add(translation.compose(rotation));
       }
     }
 

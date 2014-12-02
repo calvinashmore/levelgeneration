@@ -13,6 +13,10 @@ import generation.ConnectionTemplate;
  */
 public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
 
+  /**
+   * Only used for enclosure boundaries in P1Container.
+   */
+  WALL,
   DOOR_1,
   DOOR_2,
   ;
@@ -20,8 +24,8 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
   @Override
   public boolean matches(ConnectionTemplate<P1Room> other) {
     if(other == null)
-      // null passes
-      return true;
+      // null does not pass
+      return false;
 
     P1ConnectionTemplate other1 = (P1ConnectionTemplate) other;
     return other1 == this;

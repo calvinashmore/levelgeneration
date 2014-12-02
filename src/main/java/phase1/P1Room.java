@@ -8,7 +8,6 @@ package phase1;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 import generation.Room;
-import generation.RoomTemplate;
 
 /**
  *

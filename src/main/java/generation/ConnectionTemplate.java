@@ -10,13 +10,13 @@ import javax.annotation.Nullable;
 
 
 /**
- *
- * @author ashmore
+ * Connection templates describe the kinds of connections rooms may have with
+ * each other. Null implies that there is no connection present at the given transform.
  */
 public interface ConnectionTemplate<T extends Room<T,?>> {
 
   /**
-   * if other is null, this connection can be sealed
+   * Whether this template matches the other, accounting that the other may be null.
    */
   boolean matches(@Nullable ConnectionTemplate<T> other);
 

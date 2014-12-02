@@ -5,8 +5,15 @@
  */
 package phase1;
 
+import com.google.common.collect.ImmutableSet;
+import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.InProgressRoom;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import math3i.Point3i;
+import math3i.Transformation3i;
 import math3i.Volume3i;
 
 /**
@@ -15,8 +22,15 @@ import math3i.Volume3i;
  */
 public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
 
-  private Volume3i enclosingVolume;
+  private final Volume3i enclosingVolume;
   private volatile Volume3i filledRoomVolume = Volume3i.EMPTY;
+
+  // TODO: restrictions on what children can get added to the border
+
+  public P1ContainerProgress(Volume3i enclosingVolume) {
+    this.enclosingVolume = enclosingVolume;
+    setEnclosure();
+  }
 
   public Volume3i getEnclosingVolume() {
     return enclosingVolume;
@@ -54,5 +68,16 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   public boolean geometryMatches(Geometry.TransformedGeometry<P1Room> geometry) {
     P1Geometry geometry1 = (P1Geometry) geometry;
     return getFreeVolume().contains(geometry1.getVolume());
+  }
+
+  /**
+   * Sets wall connection templates on all sides of this container. Called within constructor.
+   */
+  private void setEnclosure() {
+    for(P1Geometry.P1ConnectionTransformation connectionTransform :
+            P1Geometry.P1ConnectionTransformation.getBoundaries(getEnclosingVolume())) {
+      addConnection(P1ConnectionTemplate.ConnectionPlacement.create(
+              P1ConnectionTemplate.WALL, connectionTransform));
+    }
   }
 }

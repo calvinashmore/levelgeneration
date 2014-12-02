@@ -5,6 +5,7 @@
  */
 package generation;
 
+import com.google.common.base.Preconditions;
 import java.util.List;
 import javax.annotation.Nullable;
 import util.PrioritizedCollection;
@@ -20,8 +21,8 @@ public abstract class RoomGenerator<Parent extends Room<Parent,T>, T extends Roo
 
   public RoomGenerator(InProgressRoom<Parent, T> inProgressParent,
           PrioritizedCollection<? extends RoomTemplate<T>> templates) {
-    this.inProgressParent = inProgressParent;
-    this.templates = templates;
+    this.inProgressParent = Preconditions.checkNotNull(inProgressParent);
+    this.templates = Preconditions.checkNotNull(templates);
   }
 
   public InProgressRoom<Parent, T> getInProgressParent() {

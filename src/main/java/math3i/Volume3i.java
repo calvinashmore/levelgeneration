@@ -193,6 +193,9 @@ public class Volume3i {
    */
   public boolean isContiguous() {
     throw new UnsupportedOperationException();
+  }
 
+  public ImmutableSet<Point3i> getPoints() {
+    return points;
   }
 }

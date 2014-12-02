@@ -6,10 +6,14 @@
 package phase1;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Equivalence;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.Geometry.TransformedGeometry;
+import java.util.HashSet;
+import java.util.Set;
 import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
@@ -48,7 +52,7 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
   }
 
   @AutoValue
-  public abstract static class P1ConnectionTransformation implements ConnectionTransformation<P1Room> {
+  public abstract static class P1ConnectionTransformation extends ConnectionTransformation<P1Room> {
 
     /**
      * Position within the geometry.
@@ -70,10 +74,8 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     }
 
     @Override
-    public boolean matches(ConnectionTransformation<P1Room> other) {
-      P1ConnectionTransformation other1 = (P1ConnectionTransformation) other;
-      return this.getPosition().add(this.getFacing()).equals(other1.getPosition())
-          && other1.getPosition().add(other1.getFacing()).equals(this.getPosition());
+    public ConnectionTransformation<P1Room> getOpposite() {
+      return create(getPosition().add(getFacing()), getFacing().multiply(-1));
     }
 
     @Override
@@ -83,6 +85,31 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
       return create(
               xform1.getTransformation().apply(getPosition()),
               xform1.getTransformation().applyToVector(getFacing()));
+    }
+
+    public static Set<P1ConnectionTransformation> getBoundaries(Volume3i volume) {
+      Set<Point3i> directions = ImmutableSet.of(
+        Point3i.UNIT_X,
+        Point3i.UNIT_X.multiply(-1),
+        Point3i.UNIT_Y,
+        Point3i.UNIT_Y.multiply(-1));
+
+      Set<P1ConnectionTransformation> results = new HashSet<>();
+
+      for(Point3i point : volume.getPoints()) {
+        for(Point3i direction : directions) {
+          Point3i next = point.add(direction);
+          if(!volume.contains(next)) {
+
+            results.add(create(point,direction));
+//
+//            addConnection(ConnectionTemplate.ConnectionPlacement.create(
+//                    P1ConnectionTemplate.WALL,
+//                    P1Geometry.P1ConnectionTransformation.create(point, direction)));
+          }
+        }
+      }
+      return results;
     }
   }
 }
