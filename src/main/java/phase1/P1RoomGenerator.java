@@ -6,7 +6,6 @@
 package phase1;
 
 import com.google.common.collect.ImmutableSet;
-import generation.InProgressRoom;
 import generation.RoomGenerator;
 import generation.RoomTemplate;
 import java.util.ArrayList;

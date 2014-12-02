@@ -13,7 +13,6 @@ import generation.Geometry;
 import generation.RoomTemplate;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**

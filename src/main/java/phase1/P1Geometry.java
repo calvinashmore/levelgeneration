@@ -6,10 +6,8 @@
 package phase1;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Equivalence;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.Geometry.TransformedGeometry;
 import java.util.HashSet;

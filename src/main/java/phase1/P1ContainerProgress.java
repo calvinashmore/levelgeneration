@@ -5,15 +5,8 @@
  */
 package phase1;
 
-import com.google.common.collect.ImmutableSet;
-import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.InProgressRoom;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-import math3i.Point3i;
-import math3i.Transformation3i;
 import math3i.Volume3i;
 
 /**
