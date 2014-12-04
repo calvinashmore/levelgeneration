@@ -58,4 +58,25 @@ public class P1RoomGeneratorTest {
 
     Truth.assertThat(possibleTransformations).containsExactlyElementsIn(expectedTransformations);
   }
+
+  @Test
+  public void testFillRoom() {
+    P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(2, 1, 1));
+
+    PrioritizedCollection<P1RoomTemplate> templates = new PrioritizedCollection<>();
+    templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
+
+    // add some doors
+    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
+
+    P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
+
+    // has space for two rooms using the given template.
+    container.addChild(roomGenerator.generateRoom());
+    container.addChild(roomGenerator.generateRoom());
+
+    Truth.assertThat(roomGenerator.generateRoom()).isNull();
+    Truth.assertThat(container.isValid()).isTrue();
+  }
 }

@@ -24,11 +24,11 @@ public class P1ContainerProgressTest {
 
 
   private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_1 =
-          ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X));
+      P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.ZERO, P1Geometry.EAST);
   private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_2 =
-          ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.create(10, 0, 0), Point3i.UNIT_X));
+      P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.create(10, 0, 0), P1Geometry.EAST);
   private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_3 =
-          ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X.multiply(-1)));
+      P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.ZERO, P1Geometry.WEST);
   private static final P1RoomTemplate SINGLE_CELL_ROOM = P1RoomTemplate.create(P1Geometry.create(Volume3i.box(1, 1, 1)),
           ImmutableSet.of(CONNECTION_1));
 

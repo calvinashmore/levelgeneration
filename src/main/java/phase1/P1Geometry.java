@@ -22,6 +22,13 @@ import math3i.Volume3i;
  */
 @AutoValue
 public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometry<P1Room> {
+  
+  public static final Point3i NORTH = Point3i.UNIT_Y;
+  public static final Point3i SOUTH = Point3i.UNIT_Y.multiply(-1);
+  public static final Point3i EAST = Point3i.UNIT_X;
+  public static final Point3i WEST = Point3i.UNIT_X.multiply(-1);
+  public static final Set<Point3i> DIRECTIONS = ImmutableSet.of(NORTH, SOUTH, EAST, WEST);
+
   public abstract Volume3i getVolume();
 
   public static P1Geometry create(Volume3i volume) {
@@ -63,11 +70,7 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     public abstract Point3i getFacing();
 
     public static P1ConnectionTransformation create(Point3i position, Point3i facing) {
-      Preconditions.checkArgument(ImmutableSet.of(
-              Point3i.UNIT_X, Point3i.UNIT_Y, Point3i.UNIT_Z,
-              Point3i.UNIT_X.multiply(-1),
-              Point3i.UNIT_Y.multiply(-1),
-              Point3i.UNIT_Z.multiply(-1)).contains(facing));
+      Preconditions.checkArgument(DIRECTIONS.contains(facing));
       return new AutoValue_P1Geometry_P1ConnectionTransformation(position, facing);
     }
 
@@ -86,24 +89,13 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     }
 
     public static Set<P1ConnectionTransformation> getBoundaries(Volume3i volume) {
-      Set<Point3i> directions = ImmutableSet.of(
-        Point3i.UNIT_X,
-        Point3i.UNIT_X.multiply(-1),
-        Point3i.UNIT_Y,
-        Point3i.UNIT_Y.multiply(-1));
-
       Set<P1ConnectionTransformation> results = new HashSet<>();
 
       for(Point3i point : volume.getPoints()) {
-        for(Point3i direction : directions) {
+        for(Point3i direction : DIRECTIONS) {
           Point3i next = point.add(direction);
           if(!volume.contains(next)) {
-
             results.add(create(point,direction));
-//
-//            addConnection(ConnectionTemplate.ConnectionPlacement.create(
-//                    P1ConnectionTemplate.WALL,
-//                    P1Geometry.P1ConnectionTransformation.create(point, direction)));
           }
         }
       }

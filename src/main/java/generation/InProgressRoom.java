@@ -9,6 +9,7 @@ import com.google.common.base.Equivalence;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,6 @@ import javax.annotation.Nullable;
 public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room<Child,?>> {
 
   private final List<Child> children = new ArrayList<>();
-  //private final List<ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new ArrayList<>();
   private final Map<Equivalence.Wrapper<Geometry.ConnectionTransformation<Child>>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
 
   public void addChild(Child child) {
@@ -49,6 +49,9 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
     openConnections.put(connection.getTransform().getEquivalence(), connection);
   }
 
+  public Collection<ConnectionTemplate.ConnectionPlacement<Child>> getOpenConnections() {
+    return openConnections.values();
+  }
 
   public ImmutableList<Child> getChildren() {
     return ImmutableList.copyOf(children);
@@ -101,9 +104,13 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
   }
 
   /**
-   * Return true if this in progress room can be successfully built.
+   * Return true if this in progress room can be successfully built. Default
+   * implementation returns true if there are no open connections. Subclasses
+   * should override if they want to require specialized conditions.
    */
-  public abstract boolean isValid();
+  public boolean isValid() {
+    return openConnections.isEmpty();
+  }
 
   /**
    * Construct the actual room from this in-progress room. Throws an

@@ -43,13 +43,13 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
     filledRoomVolume = filledRoomVolume.union(child.getTransformedGeometry().getVolume());
   }
 
+  /**
+   * Returns true if there are no open connections and the volume is completely filled.
+   * @return
+   */
   @Override
   public boolean isValid() {
-    Volume3i childrenVolume = Volume3i.EMPTY;
-    for(P1Room child : getChildren())
-      childrenVolume = childrenVolume.union(child.getTransformedGeometry().getVolume());
-
-    return childrenVolume.equals(enclosingVolume);
+    return super.isValid() && filledRoomVolume.equals(enclosingVolume);
   }
 
   @Override

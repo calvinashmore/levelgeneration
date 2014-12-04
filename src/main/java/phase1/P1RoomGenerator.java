@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import math3i.Transformation3i;
 import math3i.Volume3i;
 import util.PrioritizedCollection;
@@ -73,6 +74,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
   }
 
   @Override
+  @Nullable
   public P1Room generateRoom() {
 
     Map<P1RoomTemplate, List<P1Geometry.P1GeometryTransformation>> templateToTransforms =
@@ -80,6 +82,10 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
                     Collectors.toMap(Function.identity(), t -> getPossibleTransformations(t)));
 
     P1RoomTemplate chosenTemplate = getTemplates().choose(t -> !templateToTransforms.get(t).isEmpty(), random);
+    if(chosenTemplate == null) {
+      return null;
+    }
+
     List<P1Geometry.P1GeometryTransformation> allowableTransforms = templateToTransforms.get(chosenTemplate);
     P1Geometry.P1GeometryTransformation transform = allowableTransforms.get(random.nextInt(allowableTransforms.size()));
 

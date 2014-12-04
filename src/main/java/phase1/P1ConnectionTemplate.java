@@ -6,6 +6,7 @@
 package phase1;
 
 import generation.ConnectionTemplate;
+import math3i.Point3i;
 
 /**
  *
@@ -30,5 +31,11 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
 
     P1ConnectionTemplate other1 = (P1ConnectionTemplate) other;
     return other1 == this;
+  }
+
+  public static ConnectionTemplate.ConnectionPlacement placement(
+          P1ConnectionTemplate type, Point3i position, Point3i direction) {
+    return ConnectionTemplate.ConnectionPlacement.create(
+            type, P1Geometry.P1ConnectionTransformation.create(position, direction));
   }
 }

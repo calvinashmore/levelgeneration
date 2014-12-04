@@ -40,6 +40,10 @@ public class PrioritizedCollection<T> {
   @Nullable
   public T choose(Predicate<T> predicate, Random random) {
     Iterable<Entry<T>> filteredEntries = Iterables.filter(entries, t -> predicate.apply(t.getValue()));
+    if (Iterables.isEmpty(filteredEntries)) {
+      return null;
+    }
+
     int maximumPriority = Ordering.natural().max(Iterables.transform(filteredEntries, Entry::getPriority));
     filteredEntries = Iterables.filter(filteredEntries,
             Predicates.compose(Predicates.equalTo(maximumPriority), Entry::getPriority));
