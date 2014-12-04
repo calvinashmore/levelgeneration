@@ -7,10 +7,12 @@ package phase1;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.truth.Truth;
 import generation.ConnectionTemplate;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
@@ -49,7 +51,10 @@ public class P1RoomGeneratorTest {
     container.addConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
-    List<P1Geometry.P1GeometryTransformation> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM);
+    List<P1Geometry.P1GeometryTransformation> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM,
+            container.getOpenConnections().stream()
+                    .map(placement -> placement.getTransform())
+                    .collect(Collectors.toList()));
 
     List<P1Geometry.P1GeometryTransformation> expectedTransformations = ImmutableList.of(
         P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(3)),
@@ -58,6 +63,8 @@ public class P1RoomGeneratorTest {
 
     Truth.assertThat(possibleTransformations).containsExactlyElementsIn(expectedTransformations);
   }
+
+  // TODO write some tests that handle highestPriorityConnections
 
   @Test
   public void testFillRoom() {

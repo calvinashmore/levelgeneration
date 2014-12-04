@@ -9,6 +9,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import generation.ConnectionTemplate;
+import generation.Geometry;
 import generation.RoomGenerator;
 import generation.RoomTemplate;
 import java.util.ArrayList;
@@ -53,7 +54,8 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
    */
   @Override
   public List<P1Geometry.P1GeometryTransformation> getPossibleTransformations(
-          RoomTemplate<P1Room> template) {
+          P1RoomTemplate template,
+          List<? extends Geometry.ConnectionTransformation<P1Room>> highestPriorityConnections) {
     P1RoomTemplate template1 = (P1RoomTemplate) template;
     Volume3i templateVolume = template1.getGeometry().getVolume();
 
@@ -75,6 +77,11 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
     return validTransformations.stream()
             .map(transform -> P1Geometry.P1GeometryTransformation.create(transform))
             .filter(geom -> getInProgressParent().isValidChildPlacement(template, geom))
+            .filter(geom -> template.getConnections().stream()
+                .map(ConnectionTemplate.ConnectionPlacement::getTransform)
+                .map(transform -> transform.transform(geom))
+                .anyMatch(t -> highestPriorityConnections.stream()
+                    .anyMatch(t::matches)))
             .collect(Collectors.toList());
   }
 
@@ -93,36 +100,17 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
       return null;
     }
 
-    int highestPriority = highestPriorityConnectionPlacements.get(0).getConnection().getMatchPriority();
-
     Map<P1RoomTemplate, List<P1Geometry.P1GeometryTransformation>> templateToTransforms =
-            getTemplates().getAllValues().stream().collect(
-                    Collectors.toMap(Function.identity(), t -> getPossibleTransformations(t)));
-
-    Predicate<P1RoomTemplate> hasSuitableConnection = t -> t.getConnections().stream()
-            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
-            .map(ConnectionTemplate::getMatchPriority)
-            .anyMatch(priority -> priority.equals(highestPriority));
+        getTemplates().getAllValues().stream()
+            .collect(Collectors.toMap(Function.identity(), t -> getPossibleTransformations(t, highestPriorityConnections)));
 
     P1RoomTemplate chosenTemplate = getTemplates().choose(
-            t -> !templateToTransforms.get(t).isEmpty() && hasSuitableConnection.test(t), random);
+            t -> !templateToTransforms.get(t).isEmpty(), random);
     if(chosenTemplate == null) {
       return null;
     }
 
     List<P1Geometry.P1GeometryTransformation> allowableTransforms = templateToTransforms.get(chosenTemplate);
-
-    // filter the transforms so that we can get a connection that matches one of the high priority connections.
-    allowableTransforms = allowableTransforms.stream()
-            .filter(transform -> chosenTemplate.getConnections().stream()
-                .map(placement -> placement.getTransform().transform(transform))
-                .anyMatch(highestPriorityConnections::contains))
-            .collect(Collectors.toList());
-
-    if (allowableTransforms.isEmpty()) {
-      return null;
-    }
-
     P1Geometry.P1GeometryTransformation transform = allowableTransforms.get(random.nextInt(allowableTransforms.size()));
 
     return P1Room.create(chosenTemplate, transform);

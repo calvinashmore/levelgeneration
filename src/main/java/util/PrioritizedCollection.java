@@ -6,6 +6,7 @@
 package util;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -81,5 +82,10 @@ public class PrioritizedCollection<T> {
       Preconditions.checkArgument(priority >= 0, "Can not have priority less than zero");
       return new AutoValue_PrioritizedCollection_Entry(value, weight, priority);
     }
+  }
+
+  @Override
+  public String toString() {
+    return entries.toString();
   }
 }

@@ -8,6 +8,7 @@ package generation;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import javax.annotation.Nullable;
+import phase1.P1RoomTemplate;
 import util.PrioritizedCollection;
 
 /**
@@ -33,7 +34,9 @@ public abstract class RoomGenerator<Parent extends Room<Parent,T>, T extends Roo
     return templates;
   }
 
-  public abstract List<? extends Geometry.GeometryTransformation<T>> getPossibleTransformations(RoomTemplate<T> template);
+  public abstract List<? extends Geometry.GeometryTransformation<T>> getPossibleTransformations(
+          P1RoomTemplate template,
+          List<? extends Geometry.ConnectionTransformation<T>> highestPriorityConnections);
 
   /**
    * Returns null if one cannot be generated.

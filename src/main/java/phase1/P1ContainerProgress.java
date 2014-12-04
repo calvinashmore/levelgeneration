@@ -48,7 +48,10 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
    */
   @Override
   public boolean isValid() {
-    return super.isValid();// && filledRoomVolume.equals(enclosingVolume);
+    return getOpenConnections().stream()
+            .noneMatch(placement -> placement.getConnection().getMatchPriority() > 0);
+
+//    return super.isValid();// && filledRoomVolume.equals(enclosingVolume);
   }
 
   @Override
