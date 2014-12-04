@@ -20,6 +20,11 @@ public interface ConnectionTemplate<T extends Room<T,?>> {
    */
   boolean matches(@Nullable ConnectionTemplate<T> other);
 
+  /**
+   * System will match all connections with the highest match priority before proceeding to the lower ones.
+   */
+  int getMatchPriority();
+
   @AutoValue
   public static abstract class ConnectionPlacement<T extends Room<T,?>> {
     public abstract ConnectionTemplate<T> getConnection();

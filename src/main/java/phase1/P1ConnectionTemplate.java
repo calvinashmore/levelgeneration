@@ -5,6 +5,7 @@
  */
 package phase1;
 
+import com.google.common.base.Preconditions;
 import generation.ConnectionTemplate;
 import math3i.Point3i;
 
@@ -17,10 +18,21 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
   /**
    * Only used for enclosure boundaries in P1Container.
    */
-  WALL,
-  DOOR_1,
-  DOOR_2,
+  WALL(0),
+  DOOR_1(1),
+  DOOR_2(2),
   ;
+
+  private final int matchPriority;
+
+  private P1ConnectionTemplate(int matchPriority) {
+    this.matchPriority = matchPriority;
+  }
+
+  @Override
+  public int getMatchPriority() {
+    return matchPriority;
+  }
 
   @Override
   public boolean matches(ConnectionTemplate<P1Room> other) {

@@ -44,12 +44,11 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   }
 
   /**
-   * Returns true if there are no open connections and the volume is completely filled.
-   * @return
+   * Returns true if there are no open connections.
    */
   @Override
   public boolean isValid() {
-    return super.isValid() && filledRoomVolume.equals(enclosingVolume);
+    return super.isValid();// && filledRoomVolume.equals(enclosingVolume);
   }
 
   @Override

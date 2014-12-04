@@ -7,6 +7,7 @@ package phase1;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Equivalence;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import generation.ConnectionTemplate;
 import generation.Geometry;
@@ -29,6 +30,18 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
   public abstract ImmutableSet<ConnectionTemplate.ConnectionPlacement<P1Room>> getConnections();
 
   public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room>> connections) {
+
+    for(ConnectionTemplate.ConnectionPlacement<P1Room> connection : connections) {
+      P1Geometry.P1ConnectionTransformation transform = (P1Geometry.P1ConnectionTransformation) connection.getTransform();
+      Preconditions.checkArgument(
+              geometry.getVolume().contains(transform.getPosition()),
+              "Geometry %s must contain the point of a connection %s",
+              geometry, connection);
+      Preconditions.checkArgument(
+              !geometry.getVolume().contains(transform.getPosition().add(transform.getFacing())),
+              "Geometry %s must not contain the facing direction of a connection %s",
+              geometry, connection);
+    }
 
     Map<Equivalence.Wrapper<Geometry.ConnectionTransformation<P1Room>>, ConnectionTemplate.ConnectionPlacement<P1Room>> walls =
         P1Geometry.P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()

@@ -7,6 +7,7 @@ package generation;
 
 import com.google.common.base.Equivalence;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +56,21 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
 
   public ImmutableList<Child> getChildren() {
     return ImmutableList.copyOf(children);
+  }
+
+  public List<ConnectionTemplate.ConnectionPlacement<Child>> getHighestPriorityConnections() {
+    if(openConnections.isEmpty())
+      return ImmutableList.of();
+
+    int maximumPriority = Ordering.natural().max(
+        openConnections.values().stream()
+            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .map(ConnectionTemplate::getMatchPriority)
+            .collect(Collectors.toList()));
+
+    return openConnections.values().stream()
+            .filter(connection -> connection.getConnection().getMatchPriority() == maximumPriority)
+            .collect(Collectors.toList());
   }
 
   @Nullable

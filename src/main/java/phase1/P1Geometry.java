@@ -22,12 +22,12 @@ import math3i.Volume3i;
  */
 @AutoValue
 public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometry<P1Room> {
-  
-  public static final Point3i NORTH = Point3i.UNIT_Y;
-  public static final Point3i SOUTH = Point3i.UNIT_Y.multiply(-1);
+
+  public static final Point3i SOUTH = Point3i.UNIT_Y;
+  public static final Point3i NORTH = Point3i.UNIT_Y.multiply(-1);
   public static final Point3i EAST = Point3i.UNIT_X;
   public static final Point3i WEST = Point3i.UNIT_X.multiply(-1);
-  public static final Set<Point3i> DIRECTIONS = ImmutableSet.of(NORTH, SOUTH, EAST, WEST);
+  public static final Set<Point3i> DIRECTIONS = ImmutableSet.of(SOUTH, NORTH, EAST, WEST);
 
   public abstract Volume3i getVolume();
 

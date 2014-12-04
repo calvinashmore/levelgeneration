@@ -58,6 +58,7 @@ public class P1ContainerProgressTest {
     Assert.assertTrue(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
 
     // parent has a connection opposite ours
+    // Requires a room with connections on both ends.
     container.addConnection(CONNECTION_3);
     Assert.assertFalse(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
   }
