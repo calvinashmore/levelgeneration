@@ -5,7 +5,6 @@
  */
 package math3i;
 
-import math3i.Transformation3i;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runner.RunWith;

@@ -11,6 +11,7 @@ import generation.ConnectionTemplate;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class LevelGeneration {
   public static void main(String[] args) {
     // TODO code application logic here
 
-    P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(5, 5, 1));
+    P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(10, 10, 1));
     container.addConnection(P1ConnectionTemplate.placement(
             P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), P1Geometry.WEST));
 
@@ -106,8 +107,9 @@ public class LevelGeneration {
       @Override
       protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         AffineTransform transform = g2.getTransform();
-        //g2.scale(.5, .5);
+        g2.scale(.5, .5);
         container.getChildren().forEach(room -> renderRoom(g2, room));
         g2.setTransform(transform);
       }

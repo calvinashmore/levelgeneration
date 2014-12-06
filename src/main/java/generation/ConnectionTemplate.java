@@ -53,5 +53,10 @@ public interface ConnectionTemplate<T extends Room<T,?>> {
     public boolean transformMatches(ConnectionPlacement<T> other) {
       return other.getTransform().matches(this.getTransform());
     }
+
+    @Override
+    public String toString() {
+      return getTransform()+":"+getConnection();
+    }
   }
 }

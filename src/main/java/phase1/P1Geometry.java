@@ -35,6 +35,11 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     return new AutoValue_P1Geometry(volume);
   }
 
+  @Override
+  public String toString() {
+    return "size:"+getVolume().size();
+  }
+
   @AutoValue
   public abstract static class P1GeometryTransformation implements GeometryTransformation<P1Room> {
     public abstract Transformation3i getTransformation();
@@ -100,6 +105,18 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
         }
       }
       return results;
+    }
+
+    @Override
+    public String toString() {
+      String directionString;
+      if(getFacing().equals(NORTH)) directionString = "N";
+      else if(getFacing().equals(SOUTH)) directionString = "S";
+      else if(getFacing().equals(EAST)) directionString = "E";
+      else if(getFacing().equals(WEST)) directionString = "W";
+      else throw new IllegalStateException();
+
+      return getPosition()+":"+directionString;
     }
   }
 }

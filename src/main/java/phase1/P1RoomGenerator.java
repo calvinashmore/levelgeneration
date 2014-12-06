@@ -5,21 +5,16 @@
  */
 package phase1;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.RoomGenerator;
-import generation.RoomTemplate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import math3i.Transformation3i;
@@ -67,8 +62,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
 
     List<Transformation3i> validTransformations = new ArrayList<>();
     for(Transformation3i rotation : rotations) {
-      for (Transformation3i translation
-              : getInProgressParent().getFreeVolume()
+      for (Transformation3i translation : getInProgressParent().getFreeVolume()
               .getValidTranslations(templateVolume.transform(rotation))) {
         validTransformations.add(translation.compose(rotation));
       }

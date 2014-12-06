@@ -5,8 +5,6 @@
  */
 package math3i;
 
-import math3i.Volume3i;
-import math3i.Transformation3i;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
