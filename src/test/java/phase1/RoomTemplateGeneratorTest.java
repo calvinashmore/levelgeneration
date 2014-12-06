@@ -5,6 +5,7 @@
  */
 package phase1;
 
+import generation.RoomTemplateGenerator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
@@ -25,7 +26,7 @@ public class RoomTemplateGeneratorTest {
   @Test
   public void testGenerateTemplates() {
     P1Geometry geometry = P1Geometry.create(Volume3i.box(1, 1, 1));
-    RoomTemplateGenerator generator = new RoomTemplateGenerator(geometry);
+    RoomTemplateGenerator generator = new P1RoomTemplateGenerator(geometry);
     P1Geometry.P1ConnectionTransformation c1 = P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.WEST);
     P1Geometry.P1ConnectionTransformation c2 = P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.EAST);
     generator.addConnections(c1,

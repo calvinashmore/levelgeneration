@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package phase1;
+package generation;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
-import generation.ConnectionTemplate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,26 +23,30 @@ import java.util.stream.Collectors;
  * Note for when using this: the system knows how to rotate rooms when placing them,
  * so templates produced by this should not be rotational transforms of each other.
  */
-public class RoomTemplateGenerator {
+public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
 
-  private final P1Geometry geometry;
-  private final ListMultimap<P1Geometry.P1ConnectionTransformation, P1ConnectionTemplate> possibleConnections;
+  private final Geometry<T> geometry;
+  private final ListMultimap<Geometry.ConnectionTransformation<T>, ConnectionTemplate<T>> possibleConnections;
 
-  public RoomTemplateGenerator(P1Geometry geometry) {
+  public RoomTemplateGenerator(Geometry<T> geometry) {
     this.geometry = geometry;
     possibleConnections = ArrayListMultimap.create();
   }
 
-  public RoomTemplateGenerator addConnections(
-          P1Geometry.P1ConnectionTransformation transform,
-          Iterable<P1ConnectionTemplate> connections) {
+  protected Geometry<T> getGeometry() {
+    return geometry;
+  }
+
+  public RoomTemplateGenerator<T> addConnections(
+          Geometry.ConnectionTransformation<T> transform,
+          Iterable<ConnectionTemplate<T>> connections) {
     possibleConnections.putAll(transform, connections);
     return this;
   }
 
   public RoomTemplateGenerator addConnections(
-          P1Geometry.P1ConnectionTransformation transform,
-          P1ConnectionTemplate... connections) {
+          Geometry.ConnectionTransformation<T> transform,
+          ConnectionTemplate<T>... connections) {
     possibleConnections.putAll(transform, Arrays.asList(connections));
     return this;
   }
@@ -89,23 +92,19 @@ public class RoomTemplateGenerator {
   /**
    * Returns true if the given template is a valid output of this generator.
    */
-  private boolean isValid(P1RoomTemplate template) {
-    // needs at least one connection that's not a wall
-    return template.getConnections().stream()
-            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
-            .map(ConnectionTemplate::getMatchPriority)
-            .anyMatch(v -> v > 0);
-  }
+  abstract protected boolean isValid(RoomTemplate<T> template);
+
+  abstract protected RoomTemplate<T> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<T>> placements);
 
   /**
    * Generates templates using every possible combination of the possibleConnections.
    */
-  public Iterable<P1RoomTemplate> generateTemplates() {
+  public Iterable<RoomTemplate<T>> generateTemplates() {
     return explode(possibleConnections).stream()
             .map(mappings -> mappings.entrySet().stream()
                 .map(entry -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toSet()))
-            .map(placements -> P1RoomTemplate.create(geometry, placements))
+            .map(this::createTemplate)
             .filter(this::isValid)
             .collect(Collectors.toList());
   }
