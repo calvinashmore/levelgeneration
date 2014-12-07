@@ -40,6 +40,13 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     return "size:"+getVolume().size();
   }
 
+  /**
+   * Convenience wrapper.
+   */
+  public static P1ConnectionTransformation connection(Point3i position, Point3i facing) {
+    return P1ConnectionTransformation.create(position, facing);
+  }
+
   @AutoValue
   public abstract static class P1GeometryTransformation implements GeometryTransformation<P1Room> {
     public abstract Transformation3i getTransformation();

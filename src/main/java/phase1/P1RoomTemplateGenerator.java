@@ -34,4 +34,19 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
   protected RoomTemplate<P1Room> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<P1Room>> placements) {
     return P1RoomTemplate.create((P1Geometry) getGeometry(), placements);
   }
+
+  @Override
+  public Iterable<P1RoomTemplate> generateTemplates() {
+    return (Iterable<P1RoomTemplate>) super.generateTemplates();
+  }
+
+  @Override
+  public P1RoomTemplateGenerator addConnections(Geometry.ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room>... connections) {
+    return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
+  }
+
+  @Override
+  public P1RoomTemplateGenerator addConnections(Geometry.ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room>> connections) {
+    return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
+  }
 }

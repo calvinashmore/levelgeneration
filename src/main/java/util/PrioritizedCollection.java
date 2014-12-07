@@ -16,6 +16,7 @@ import com.google.common.collect.Ordering;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -28,7 +29,32 @@ public class PrioritizedCollection<T> {
   private final List<Entry<T>> entries = new ArrayList<>();
 
   public void addEntry(T value, double weight, int priority) {
+    Preconditions.checkNotNull(value);
+
+    List<Entry<T>> toRemove = entries.stream()
+            .filter(entry -> entry.getValue().equals(value) && entry.getPriority() == priority)
+            .collect(Collectors.toList());
+
+    entries.removeAll(toRemove);
+    // toRemove should have only one element.
+    // using summingDouble is a bit redundant here if that is the case.
+    weight = Math.max(weight, toRemove.stream().collect(Collectors.summingDouble(Entry::getWeight)));
     entries.add(Entry.create(value, weight, priority));
+  }
+
+  /**
+   * Add the following entries so that the sum of all possibilities has the same weight.
+   */
+  public void addEntries(Iterable<T> values, double weight, int priority) {
+    double itemWeight = weight / Iterables.size(values);
+    values.forEach(value -> {addEntry(value, itemWeight, priority);});
+  }
+
+  /**
+   * Add the following entries using the given weighting function
+   */
+  public void addEntries(Iterable<T> values, Function<T, Double> weightFunction, int priority) {
+    values.forEach(value -> {addEntry(value, weightFunction.apply(value), priority);});
   }
 
   public List<T> getAllValues() {

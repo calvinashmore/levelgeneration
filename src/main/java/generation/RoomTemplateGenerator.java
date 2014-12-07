@@ -99,7 +99,7 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
   /**
    * Generates templates using every possible combination of the possibleConnections.
    */
-  public Iterable<RoomTemplate<T>> generateTemplates() {
+  public Iterable<? extends RoomTemplate<T>> generateTemplates() {
     return explode(possibleConnections).stream()
             .map(mappings -> mappings.entrySet().stream()
                 .map(entry -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))

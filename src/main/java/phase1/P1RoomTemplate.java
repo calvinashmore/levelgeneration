@@ -29,6 +29,14 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
   @Override
   public abstract ImmutableSet<ConnectionTemplate.ConnectionPlacement<P1Room>> getConnections();
 
+  public int getNumberOfDoors() {
+    return (int) getConnections().stream()
+            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .map(ConnectionTemplate::getMatchPriority)
+            .filter(priority -> priority > 0)
+            .count();
+  }
+
   public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room>> connections) {
 
     for(ConnectionTemplate.ConnectionPlacement<P1Room> connection : connections) {
