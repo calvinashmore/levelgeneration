@@ -17,11 +17,13 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
 
   private final Volume3i enclosingVolume;
   private volatile Volume3i filledRoomVolume = Volume3i.EMPTY;
+  private volatile Volume3i freeVolume;
 
   // TODO: restrictions on what children can get added to the border
 
   public P1ContainerProgress(Volume3i enclosingVolume) {
     this.enclosingVolume = enclosingVolume;
+    this.freeVolume = enclosingVolume;
     setEnclosure();
   }
 
@@ -34,13 +36,14 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   }
 
   public Volume3i getFreeVolume() {
-    return getEnclosingVolume().difference(getFilledRoomVolume());
+    return freeVolume;
   }
 
   @Override
   public void addChild(P1Room child) {
     super.addChild(child);
     filledRoomVolume = filledRoomVolume.union(child.getTransformedGeometry().getVolume());
+    freeVolume = enclosingVolume.difference(filledRoomVolume);
   }
 
   /**
