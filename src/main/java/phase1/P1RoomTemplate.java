@@ -13,8 +13,11 @@ import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.RoomTemplate;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import math3i.Point3i;
 
 /**
  *
@@ -35,6 +38,17 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
             .map(ConnectionTemplate::getMatchPriority)
             .filter(priority -> priority > 0)
             .count();
+  }
+
+  @Nullable
+  public P1ConnectionTemplate getConnectionAt(Point3i position, Point3i direction) {
+    return (P1ConnectionTemplate) getConnections().stream()
+            .filter(placement ->
+                    ((P1Geometry.P1ConnectionTransformation) placement.getTransform()).getPosition().equals(position)
+                 && ((P1Geometry.P1ConnectionTransformation) placement.getTransform()).getFacing().equals(direction))
+            .findAny()
+            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .orElse(null);
   }
 
   public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room>> connections) {

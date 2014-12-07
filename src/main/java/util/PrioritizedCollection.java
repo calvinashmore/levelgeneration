@@ -6,7 +6,6 @@
 package util;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -26,8 +25,14 @@ import javax.annotation.Nullable;
  */
 public class PrioritizedCollection<T> {
 
+  // maybe make this a Map<T+priority, Double> ?
   private final List<Entry<T>> entries = new ArrayList<>();
 
+  /**
+   * Add an entry to the prioritized collection.
+   * If the entry already exists (based on value and priority),
+   * remove the existing entry and use the maximum of the weight of that entry and the weight supplied.
+   */
   public void addEntry(T value, double weight, int priority) {
     Preconditions.checkNotNull(value);
 

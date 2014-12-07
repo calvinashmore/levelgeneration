@@ -40,7 +40,9 @@ public class LevelGeneration {
 
   private static final P1RoomTemplateGenerator BIG_ROOM = new P1RoomTemplateGenerator(P1Geometry.create(Volume3i.box(3, 3, 1)))
           .addConnections(P1Geometry.connection(Point3i.create(0,1,0), P1Geometry.WEST), P1ConnectionTemplate.DOOR_1)
+          .addConnections(P1Geometry.connection(Point3i.create(2,0,0), P1Geometry.EAST), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
           .addConnections(P1Geometry.connection(Point3i.create(2,1,0), P1Geometry.EAST), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
+          .addConnections(P1Geometry.connection(Point3i.create(2,2,0), P1Geometry.EAST), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
           .addConnections(P1Geometry.connection(Point3i.create(1,0,0), P1Geometry.NORTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
           .addConnections(P1Geometry.connection(Point3i.create(1,2,0), P1Geometry.SOUTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL);
 

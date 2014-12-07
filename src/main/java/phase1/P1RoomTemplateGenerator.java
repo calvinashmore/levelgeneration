@@ -5,10 +5,12 @@
  */
 package phase1;
 
+import com.google.common.base.Predicates;
 import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.RoomTemplate;
 import generation.RoomTemplateGenerator;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -23,11 +25,26 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
 
   @Override
   protected boolean isValid(RoomTemplate<P1Room> template) {
+    P1RoomTemplate template1 = (P1RoomTemplate) template;
     // needs at least one connection that's not a wall
-    return template.getConnections().stream()
+    boolean hasDoor = template.getConnections().stream()
             .map(ConnectionTemplate.ConnectionPlacement::getConnection)
             .map(ConnectionTemplate::getMatchPriority)
             .anyMatch(v -> v > 0);
+
+    boolean hasAdjacentDoors = template.getConnections().stream()
+            .filter(placement -> placement.getConnection().getMatchPriority() > 0)
+            .map(ConnectionTemplate.ConnectionPlacement::getTransform)
+            .anyMatch( xform -> {
+              P1Geometry.P1ConnectionTransformation xform1 = (P1Geometry.P1ConnectionTransformation) xform;
+              return P1Geometry.DIRECTIONS.stream()
+                      .map(direction -> template1.getConnectionAt(xform1.getPosition().add(direction), xform1.getFacing()))
+                      .filter(Objects::nonNull)
+                      .map(ConnectionTemplate::getMatchPriority)
+                      .anyMatch(priority -> priority > 0);
+            } );
+
+    return hasDoor && !hasAdjacentDoors;
   }
 
   @Override
