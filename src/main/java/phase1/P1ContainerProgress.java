@@ -7,6 +7,7 @@ package phase1;
 
 import generation.Geometry;
 import generation.InProgressRoom;
+import java.util.stream.Collectors;
 import math3i.Volume3i;
 
 /**
@@ -16,10 +17,8 @@ import math3i.Volume3i;
 public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
 
   private final Volume3i enclosingVolume;
-  private volatile Volume3i filledRoomVolume = Volume3i.EMPTY;
-  private volatile Volume3i freeVolume;
-
-  // TODO: restrictions on what children can get added to the border
+  private transient Volume3i filledRoomVolume = Volume3i.EMPTY;
+  private transient Volume3i freeVolume;
 
   public P1ContainerProgress(Volume3i enclosingVolume) {
     this.enclosingVolume = enclosingVolume;
@@ -32,17 +31,27 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   }
 
   public Volume3i getFilledRoomVolume() {
+    if(filledRoomVolume == null)
+      calculateVolumes();
     return filledRoomVolume;
   }
 
   public Volume3i getFreeVolume() {
+    if(freeVolume == null)
+      calculateVolumes();
     return freeVolume;
   }
 
   @Override
   public void addChild(P1Room child) {
     super.addChild(child);
-    filledRoomVolume = filledRoomVolume.union(child.getTransformedGeometry().getVolume());
+    calculateVolumes();
+  }
+
+  private void calculateVolumes() {
+    filledRoomVolume = Volume3i.union(getChildren().stream()
+        .map(child -> ((P1Room) child).getTransformedGeometry().getVolume())
+        .collect(Collectors.toList()));
     freeVolume = enclosingVolume.difference(filledRoomVolume);
   }
 
@@ -53,8 +62,6 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   public boolean isValid() {
     return getOpenConnections().stream()
             .noneMatch(placement -> placement.getConnection().getMatchPriority() > 0);
-
-//    return super.isValid();// && filledRoomVolume.equals(enclosingVolume);
   }
 
   @Override

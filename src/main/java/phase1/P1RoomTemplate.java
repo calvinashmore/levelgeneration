@@ -6,14 +6,12 @@
 package phase1;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Equivalence;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import generation.ConnectionTemplate;
 import generation.Geometry;
 import generation.RoomTemplate;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -65,7 +63,8 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
               geometry, connection);
     }
 
-    Map<Equivalence.Wrapper<Geometry.ConnectionTransformation<P1Room>>, ConnectionTemplate.ConnectionPlacement<P1Room>> walls =
+    Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<P1Room>,
+            ConnectionTemplate.ConnectionPlacement<P1Room>> walls =
         P1Geometry.P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()
             .map(t -> ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
             .collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), p -> p));

@@ -5,7 +5,6 @@
  */
 package generation;
 
-import com.google.common.base.Equivalence;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room<Child,?>> {
 
   private final List<Child> children = new ArrayList<>();
-  private final Map<Equivalence.Wrapper<Geometry.ConnectionTransformation<Child>>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
+  private final Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
 
   public void addChild(Child child) {
     children.add(child);
@@ -90,24 +90,43 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
             .map(c -> c.transform(transform))
             .collect(Collectors.toList());
 
+    if (!checkRoomConnectionsMatch(roomConnections)) {
+      return false;
+    }
+
+    Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+            ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap =
+            roomConnections.stream().collect(Collectors.toMap(t -> t.getTransform().getEquivalence(), Function.identity()));
+
+    if (!checkOpenConnectionsMatch(roomConnectionMap)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private boolean checkRoomConnectionsMatch(List<ConnectionTemplate.ConnectionPlacement<Child>> roomConnections) {
     // check that all room connections match with the parent connections
-    for(ConnectionTemplate.ConnectionPlacement<Child> roomConnection : roomConnections) {
+    for (ConnectionTemplate.ConnectionPlacement<Child> roomConnection : roomConnections) {
       ConnectionTemplate.ConnectionPlacement<Child> parentConnection = getConnectionAt(roomConnection.getTransform());
-      if(parentConnection != null && !parentConnection.matches(roomConnection)) {
+      if (parentConnection != null && !parentConnection.matches(roomConnection)) {
         return false;
       }
     }
+    return true;
+  }
 
-    Map<Equivalence.Wrapper<Geometry.ConnectionTransformation<Child>>, ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap =
-            roomConnections.stream().collect(Collectors.toMap(t -> t.getTransform().getEquivalence(), t -> t));
-
+    private boolean checkOpenConnectionsMatch(
+            Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+            ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap) {
     // check that all parent connections match with the child connections
-    for(ConnectionTemplate.ConnectionPlacement<Child> parentConnection : openConnections.values()) {
-      ConnectionTemplate.ConnectionPlacement<Child> roomConnection = roomConnectionMap.get(parentConnection.getTransform().getEquivalence());
-      if(roomConnection != null && !roomConnection.matches(parentConnection))
+    for (ConnectionTemplate.ConnectionPlacement<Child> parentConnection : openConnections.values()) {
+      ConnectionTemplate.ConnectionPlacement<Child> roomConnection =
+              roomConnectionMap.get(parentConnection.getTransform().getEquivalence());
+      if (roomConnection != null && !roomConnection.matches(parentConnection)) {
         return false;
+      }
     }
-
     return true;
   }
 
