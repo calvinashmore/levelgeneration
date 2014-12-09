@@ -8,6 +8,7 @@ package phase1;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import generation.ConnectionTransformation;
 import generation.Geometry;
 import generation.Geometry.TransformedGeometry;
 import java.util.HashSet;
@@ -68,62 +69,4 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
     }
   }
 
-  @AutoValue
-  public abstract static class P1ConnectionTransformation extends ConnectionTransformation<P1Room> {
-
-    /**
-     * Position within the geometry.
-     */
-    public abstract Point3i getPosition();
-
-    /**
-     * Facing vector. Must be a unit vector.
-     */
-    public abstract Point3i getFacing();
-
-    public static P1ConnectionTransformation create(Point3i position, Point3i facing) {
-      Preconditions.checkArgument(DIRECTIONS.contains(facing));
-      return new AutoValue_P1Geometry_P1ConnectionTransformation(position, facing);
-    }
-
-    @Override
-    public ConnectionTransformation<P1Room> getOpposite() {
-      return create(getPosition().add(getFacing()), getFacing().multiply(-1));
-    }
-
-    @Override
-    public P1ConnectionTransformation transform(GeometryTransformation<P1Room> xform) {
-      P1GeometryTransformation xform1 = (P1GeometryTransformation) xform;
-
-      return create(
-              xform1.getTransformation().apply(getPosition()),
-              xform1.getTransformation().applyToVector(getFacing()));
-    }
-
-    public static Set<P1ConnectionTransformation> getBoundaries(Volume3i volume) {
-      Set<P1ConnectionTransformation> results = new HashSet<>();
-
-      for(Point3i point : volume.getPoints()) {
-        for(Point3i direction : DIRECTIONS) {
-          Point3i next = point.add(direction);
-          if(!volume.contains(next)) {
-            results.add(create(point,direction));
-          }
-        }
-      }
-      return results;
-    }
-
-    @Override
-    public String toString() {
-      String directionString;
-      if(getFacing().equals(NORTH)) directionString = "N";
-      else if(getFacing().equals(SOUTH)) directionString = "S";
-      else if(getFacing().equals(EAST)) directionString = "E";
-      else if(getFacing().equals(WEST)) directionString = "W";
-      else throw new IllegalStateException();
-
-      return getPosition()+":"+directionString;
-    }
-  }
 }

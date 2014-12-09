@@ -5,8 +5,8 @@
  */
 package phase1;
 
-import com.google.common.base.Predicates;
 import generation.ConnectionTemplate;
+import generation.ConnectionTransformation;
 import generation.Geometry;
 import generation.RoomTemplate;
 import generation.RoomTemplateGenerator;
@@ -35,8 +35,8 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
     boolean hasAdjacentDoors = template.getConnections().stream()
             .filter(placement -> placement.getConnection().getMatchPriority() > 0)
             .map(ConnectionTemplate.ConnectionPlacement::getTransform)
-            .anyMatch( xform -> {
-              P1Geometry.P1ConnectionTransformation xform1 = (P1Geometry.P1ConnectionTransformation) xform;
+            .anyMatch(xform -> {
+              P1ConnectionTransformation xform1 = (P1ConnectionTransformation) xform;
               return P1Geometry.DIRECTIONS.stream()
                       .map(direction -> template1.getConnectionAt(xform1.getPosition().add(direction), xform1.getFacing()))
                       .filter(Objects::nonNull)
@@ -58,12 +58,12 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
   }
 
   @Override
-  public P1RoomTemplateGenerator addConnections(Geometry.ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room>... connections) {
+  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room>... connections) {
     return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
   }
 
   @Override
-  public P1RoomTemplateGenerator addConnections(Geometry.ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room>> connections) {
+  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room>> connections) {
     return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
   }
 }

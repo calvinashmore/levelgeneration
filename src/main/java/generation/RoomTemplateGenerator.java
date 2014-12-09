@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
 
   private final Geometry<T> geometry;
-  private final ListMultimap<Geometry.ConnectionTransformation<T>, ConnectionTemplate<T>> possibleConnections;
+  private final ListMultimap<ConnectionTransformation<T>, ConnectionTemplate<T>> possibleConnections;
 
   public RoomTemplateGenerator(Geometry<T> geometry) {
     this.geometry = geometry;
@@ -38,14 +38,14 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
   }
 
   public RoomTemplateGenerator<T> addConnections(
-          Geometry.ConnectionTransformation<T> transform,
+          ConnectionTransformation<T> transform,
           Iterable<ConnectionTemplate<T>> connections) {
     possibleConnections.putAll(transform, connections);
     return this;
   }
 
   public RoomTemplateGenerator addConnections(
-          Geometry.ConnectionTransformation<T> transform,
+          ConnectionTransformation<T> transform,
           ConnectionTemplate<T>... connections) {
     possibleConnections.putAll(transform, Arrays.asList(connections));
     return this;
@@ -101,8 +101,8 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
    */
   public Iterable<? extends RoomTemplate<T>> generateTemplates() {
     return explode(possibleConnections).stream()
-            .map(mappings -> mappings.entrySet().stream()
-                .map(entry -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
+            .map((java.util.Map<generation.ConnectionTransformation<T>, generation.ConnectionTemplate<T>> mappings) -> mappings.entrySet().stream()
+                .map((java.util.Map.Entry<generation.ConnectionTransformation<T>, generation.ConnectionTemplate<T>> entry) -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toSet()))
             .map(this::createTemplate)
             .filter(this::isValid)

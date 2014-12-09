@@ -48,6 +48,6 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
   public static ConnectionTemplate.ConnectionPlacement placement(
           P1ConnectionTemplate type, Point3i position, Point3i direction) {
     return ConnectionTemplate.ConnectionPlacement.create(
-            type, P1Geometry.P1ConnectionTransformation.create(position, direction));
+            type, P1ConnectionTransformation.create(position, direction));
   }
 }

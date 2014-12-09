@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import math3i.Point3i;
+import phase1.P1ConnectionTransformation;
 import phase1.P1Geometry;
 
 /**
@@ -34,7 +35,7 @@ public class ConnectionRenderer {
     this.lineColor = lineColor;
   }
 
-  public void render(P1Geometry.P1ConnectionTransformation connection, Graphics2D g) {
+  public void render(P1ConnectionTransformation connection, Graphics2D g) {
     Point3i position = connection.getPosition();
     Point3i facing = connection.getFacing();
 

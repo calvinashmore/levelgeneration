@@ -25,8 +25,8 @@ import javax.annotation.Nullable;
 public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room<Child,?>> {
 
   private final List<Child> children = new ArrayList<>();
-  private final Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> parentConnections = new HashMap<>();
-  private final Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
+  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> parentConnections = new HashMap<>();
+  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
 
   public void addChild(Child child) {
     children.add(child);
@@ -89,7 +89,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
     return openConnections.values();
   }
 
-  public Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> getParentConnections() {
+  public Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> getParentConnections() {
     return ImmutableMap.copyOf(parentConnections);
   }
 
@@ -122,7 +122,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * Return the connection at the given transform if it exists, null otherwise.
    */
   @Nullable
-  public ConnectionTemplate.ConnectionPlacement<Child> getConnectionAt(Geometry.ConnectionTransformation<Child> connectionTransform) {
+  public ConnectionTemplate.ConnectionPlacement<Child> getConnectionAt(ConnectionTransformation<Child> connectionTransform) {
     return openConnections.get(connectionTransform.getEquivalence());
   }
 
@@ -145,7 +145,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
       return false;
     }
 
-    Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+    Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
             ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap =
             roomConnections.stream().collect(Collectors.toMap(t -> t.getTransform().getEquivalence(), Function.identity()));
 
@@ -180,7 +180,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * matching is non-commutative, then this will be important.
    */
   private boolean checkOpenConnectionsMatch(
-          Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+          Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
           ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap) {
     // check that all parent connections match with the child connections
     for (ConnectionTemplate.ConnectionPlacement<Child> parentConnection : openConnections.values()) {

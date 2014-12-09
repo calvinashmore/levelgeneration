@@ -27,8 +27,8 @@ public class RoomTemplateGeneratorTest {
   public void testGenerateTemplates() {
     P1Geometry geometry = P1Geometry.create(Volume3i.box(1, 1, 1));
     RoomTemplateGenerator generator = new P1RoomTemplateGenerator(geometry);
-    P1Geometry.P1ConnectionTransformation c1 = P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.WEST);
-    P1Geometry.P1ConnectionTransformation c2 = P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.EAST);
+    P1ConnectionTransformation c1 = P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.WEST);
+    P1ConnectionTransformation c2 = P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.EAST);
     generator.addConnections(c1,
             P1ConnectionTemplate.WALL,
             P1ConnectionTemplate.DOOR_1);

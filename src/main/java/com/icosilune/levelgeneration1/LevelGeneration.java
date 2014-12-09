@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import math3i.Point3i;
 import math3i.Volume3i;
 import phase1.P1ConnectionTemplate;
+import phase1.P1ConnectionTransformation;
 import phase1.P1ContainerProgress;
 import phase1.P1Geometry;
 import phase1.P1Room;
@@ -149,7 +150,7 @@ public class LevelGeneration {
     room.getConnectionPlacements().stream()
             .filter(placement -> placement.getConnection() != P1ConnectionTemplate.WALL)
             .forEach(placement -> {
-      CONNECTION_RENDERER.render((P1Geometry.P1ConnectionTransformation) placement.getTransform(), g);
+      CONNECTION_RENDERER.render((P1ConnectionTransformation) placement.getTransform(), g);
     });
   }
 }

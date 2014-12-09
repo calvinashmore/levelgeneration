@@ -7,7 +7,7 @@ package phase1;
 
 import com.google.common.collect.ImmutableSet;
 import generation.ConnectionTemplate;
-import generation.Geometry;
+import generation.ConnectionTransformation;
 import generation.RoomGenerator;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
   @Override
   public List<P1Geometry.P1GeometryTransformation> getPossibleTransformations(
           P1RoomTemplate template,
-          List<? extends Geometry.ConnectionTransformation<P1Room>> highestPriorityConnections) {
+          List<? extends ConnectionTransformation<P1Room>> highestPriorityConnections) {
     P1RoomTemplate template1 = (P1RoomTemplate) template;
     Volume3i templateVolume = template1.getGeometry().getVolume();
 
@@ -86,8 +86,8 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
     P1ContainerProgress parent = getInProgressParent();
     List<ConnectionTemplate.ConnectionPlacement<P1Room>> highestPriorityConnectionPlacements =
             parent.getHighestPriorityConnections();
-    List<P1Geometry.P1ConnectionTransformation> highestPriorityConnections = highestPriorityConnectionPlacements.stream()
-            .map(placement -> (P1Geometry.P1ConnectionTransformation) placement.getTransform())
+    List<P1ConnectionTransformation> highestPriorityConnections = highestPriorityConnectionPlacements.stream()
+            .map(placement -> (P1ConnectionTransformation) placement.getTransform())
             .collect(Collectors.toList());
 
     if(highestPriorityConnectionPlacements.isEmpty()) {

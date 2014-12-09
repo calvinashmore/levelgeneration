@@ -29,7 +29,7 @@ import util.PrioritizedCollection;
 public class P1RoomGeneratorTest {
 
   private static final P1RoomTemplate SINGLE_CELL_ROOM = P1RoomTemplate.create(P1Geometry.create(Volume3i.box(1, 1, 1)),
-          ImmutableSet.of(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X))));
+          ImmutableSet.of(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X))));
 
   private @Mock Random random;
 
@@ -46,8 +46,8 @@ public class P1RoomGeneratorTest {
     templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
 
     // add some doors
-    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
+    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
     List<P1Geometry.P1GeometryTransformation> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM,
@@ -73,8 +73,8 @@ public class P1RoomGeneratorTest {
     templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
 
     // add some doors
-    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1Geometry.P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
+    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addParentConnection(ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
 

@@ -9,7 +9,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import generation.ConnectionTemplate;
-import generation.Geometry;
+import generation.ConnectionTransformation;
 import generation.RoomTemplate;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +42,8 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
   public P1ConnectionTemplate getConnectionAt(Point3i position, Point3i direction) {
     return (P1ConnectionTemplate) getConnections().stream()
             .filter(placement ->
-                    ((P1Geometry.P1ConnectionTransformation) placement.getTransform()).getPosition().equals(position)
-                 && ((P1Geometry.P1ConnectionTransformation) placement.getTransform()).getFacing().equals(direction))
+                    ((P1ConnectionTransformation) placement.getTransform()).getPosition().equals(position)
+                 && ((P1ConnectionTransformation) placement.getTransform()).getFacing().equals(direction))
             .findAny()
             .map(ConnectionTemplate.ConnectionPlacement::getConnection)
             .orElse(null);
@@ -52,7 +52,7 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
   public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room>> connections) {
 
     for(ConnectionTemplate.ConnectionPlacement<P1Room> connection : connections) {
-      P1Geometry.P1ConnectionTransformation transform = (P1Geometry.P1ConnectionTransformation) connection.getTransform();
+      P1ConnectionTransformation transform = (P1ConnectionTransformation) connection.getTransform();
       Preconditions.checkArgument(
               geometry.getVolume().contains(transform.getPosition()),
               "Geometry %s must contain the point of a connection %s",
@@ -63,10 +63,10 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
               geometry, connection);
     }
 
-    Map<Geometry.ConnectionTransformation.ConnectionTransformationEquivalence<P1Room>,
+    Map<ConnectionTransformation.ConnectionTransformationEquivalence<P1Room>,
             ConnectionTemplate.ConnectionPlacement<P1Room>> walls =
-        P1Geometry.P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()
-            .map(t -> ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
+        P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()
+            .map((phase1.P1ConnectionTransformation t) -> ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
             .collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), p -> p));
 
     // add the external connections to the walls.

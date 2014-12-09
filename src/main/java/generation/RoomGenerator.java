@@ -36,7 +36,7 @@ public abstract class RoomGenerator<Parent extends Room<Parent,T>, T extends Roo
 
   public abstract List<? extends Geometry.GeometryTransformation<T>> getPossibleTransformations(
           P1RoomTemplate template,
-          List<? extends Geometry.ConnectionTransformation<T>> highestPriorityConnections);
+          List<? extends ConnectionTransformation<T>> highestPriorityConnections);
 
   /**
    * Returns null if one cannot be generated.
