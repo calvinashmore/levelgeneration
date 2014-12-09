@@ -81,7 +81,7 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
   private void setEnclosure() {
     for(P1Geometry.P1ConnectionTransformation connectionTransform :
             P1Geometry.P1ConnectionTransformation.getBoundaries(getEnclosingVolume())) {
-      addConnection(P1ConnectionTemplate.ConnectionPlacement.create(
+      addParentConnection(P1ConnectionTemplate.ConnectionPlacement.create(
               P1ConnectionTemplate.WALL, connectionTransform));
     }
   }

@@ -88,7 +88,7 @@ public class LevelGeneration {
     // TODO code application logic here
 
     P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(20, 20, 1));
-    container.addConnection(P1ConnectionTemplate.placement(
+    container.addParentConnection(P1ConnectionTemplate.placement(
             P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), P1Geometry.WEST));
 
     PrioritizedCollection<P1RoomTemplate> templates = new PrioritizedCollection<>();

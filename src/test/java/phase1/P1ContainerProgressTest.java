@@ -36,7 +36,7 @@ public class P1ContainerProgressTest {
   public void testGetConnectionAt() {
     P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(1, 1, 1));
 
-    container.addConnection(CONNECTION_1);
+    container.addParentConnection(CONNECTION_1);
     Assert.assertEquals(CONNECTION_1, container.getConnectionAt(CONNECTION_1.getTransform()));
     Assert.assertEquals(CONNECTION_1, container.getConnectionAt(CONNECTION_1.getTransform().getOpposite()));
   }
@@ -50,16 +50,16 @@ public class P1ContainerProgressTest {
     Assert.assertFalse(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
 
     // parent has a connection that matches this exactly
-    container.addConnection(CONNECTION_1);
+    container.addParentConnection(CONNECTION_1);
     Assert.assertTrue(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
 
     // parent has a connection that is far away that we don't care about
-    container.addConnection(CONNECTION_2);
+    container.addParentConnection(CONNECTION_2);
     Assert.assertTrue(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
 
     // parent has a connection opposite ours
     // Requires a room with connections on both ends.
-    container.addConnection(CONNECTION_3);
+    container.addParentConnection(CONNECTION_3);
     Assert.assertFalse(container.connectionsMatch(SINGLE_CELL_ROOM, identityTransform));
   }
 }
