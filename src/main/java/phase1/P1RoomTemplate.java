@@ -22,13 +22,13 @@ import math3i.Point3i;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
+public abstract class P1RoomTemplate implements RoomTemplate<P1Room, P1KeyType> {
 
   @Override
   public abstract P1Geometry getGeometry();
 
   @Override
-  public abstract ImmutableSet<ConnectionTemplate.ConnectionPlacement<P1Room>> getConnections();
+  public abstract ImmutableSet<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> getConnections();
 
   public int getNumberOfDoors() {
     return (int) getConnections().stream()
@@ -49,9 +49,9 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
             .orElse(null);
   }
 
-  public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room>> connections) {
+  public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> connections) {
 
-    for(ConnectionTemplate.ConnectionPlacement<P1Room> connection : connections) {
+    for(ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType> connection : connections) {
       P1ConnectionTransformation transform = (P1ConnectionTransformation) connection.getTransform();
       Preconditions.checkArgument(
               geometry.getVolume().contains(transform.getPosition()),
@@ -64,7 +64,7 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room> {
     }
 
     Map<ConnectionTransformation.ConnectionTransformationEquivalence<P1Room>,
-            ConnectionTemplate.ConnectionPlacement<P1Room>> walls =
+            ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> walls =
         P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()
             .map((phase1.P1ConnectionTransformation t) -> ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
             .collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), p -> p));

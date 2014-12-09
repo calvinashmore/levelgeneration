@@ -8,6 +8,7 @@ package phase1;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 import generation.Geometry;
+import generation.KeyType;
 import generation.Room;
 import generation.RoomTemplate;
 
@@ -16,7 +17,7 @@ import generation.RoomTemplate;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1Container extends Room<P1Container, P1Room>{
+public abstract class P1Container extends Room<P1Container, P1Room, KeyType>{
 
   public static P1Container create(Iterable<P1Room> children) {
     return new AutoValue_P1Container(ImmutableSet.copyOf(children));
@@ -27,7 +28,7 @@ public abstract class P1Container extends Room<P1Container, P1Room>{
   public abstract ImmutableSet<P1Room> getChildren();
 
   @Override
-  public RoomTemplate<P1Container> getTemplate() {
+  public RoomTemplate<P1Container, KeyType> getTemplate() {
     throw new UnsupportedOperationException();
   }
 

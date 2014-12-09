@@ -14,7 +14,7 @@ import math3i.Volume3i;
  *
  * @author ashmore
  */
-public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room> {
+public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room, P1KeyType> {
 
   private final Volume3i enclosingVolume;
   private transient Volume3i filledRoomVolume = Volume3i.EMPTY;

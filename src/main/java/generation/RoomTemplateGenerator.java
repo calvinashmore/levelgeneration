@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
  * Note for when using this: the system knows how to rotate rooms when placing them,
  * so templates produced by this should not be rotational transforms of each other.
  */
-public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
+public abstract class RoomTemplateGenerator<T extends Room<T,?,K>, K extends KeyType> {
 
   private final Geometry<T> geometry;
-  private final ListMultimap<ConnectionTransformation<T>, ConnectionTemplate<T>> possibleConnections;
+  private final ListMultimap<ConnectionTransformation<T>, ConnectionTemplate<T,K>> possibleConnections;
 
   public RoomTemplateGenerator(Geometry<T> geometry) {
     this.geometry = geometry;
@@ -37,16 +37,16 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
     return geometry;
   }
 
-  public RoomTemplateGenerator<T> addConnections(
+  public RoomTemplateGenerator<T,K> addConnections(
           ConnectionTransformation<T> transform,
-          Iterable<ConnectionTemplate<T>> connections) {
+          Iterable<ConnectionTemplate<T,K>> connections) {
     possibleConnections.putAll(transform, connections);
     return this;
   }
 
-  public RoomTemplateGenerator addConnections(
+  public RoomTemplateGenerator<T,K> addConnections(
           ConnectionTransformation<T> transform,
-          ConnectionTemplate<T>... connections) {
+          ConnectionTemplate<T,K>... connections) {
     possibleConnections.putAll(transform, Arrays.asList(connections));
     return this;
   }
@@ -92,17 +92,17 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?>> {
   /**
    * Returns true if the given template is a valid output of this generator.
    */
-  abstract protected boolean isValid(RoomTemplate<T> template);
+  abstract protected boolean isValid(RoomTemplate<T,K> template);
 
-  abstract protected RoomTemplate<T> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<T>> placements);
+  abstract protected RoomTemplate<T,K> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<T,K>> placements);
 
   /**
    * Generates templates using every possible combination of the possibleConnections.
    */
-  public Iterable<? extends RoomTemplate<T>> generateTemplates() {
+  public Iterable<? extends RoomTemplate<T,K>> generateTemplates() {
     return explode(possibleConnections).stream()
-            .map((java.util.Map<generation.ConnectionTransformation<T>, generation.ConnectionTemplate<T>> mappings) -> mappings.entrySet().stream()
-                .map((java.util.Map.Entry<generation.ConnectionTransformation<T>, generation.ConnectionTemplate<T>> entry) -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
+            .map(mappings -> mappings.entrySet().stream()
+                .map(entry -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toSet()))
             .map(this::createTemplate)
             .filter(this::isValid)

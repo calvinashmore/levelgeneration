@@ -23,11 +23,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class P1ContainerProgressTest {
 
 
-  private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_1 =
+  private static final ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType> CONNECTION_1 =
       P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.ZERO, P1Geometry.EAST);
-  private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_2 =
+  private static final ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType> CONNECTION_2 =
       P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.create(10, 0, 0), P1Geometry.EAST);
-  private static final ConnectionTemplate.ConnectionPlacement<P1Room> CONNECTION_3 =
+  private static final ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType> CONNECTION_3 =
       P1ConnectionTemplate.placement(P1ConnectionTemplate.DOOR_1, Point3i.ZERO, P1Geometry.WEST);
   private static final P1RoomTemplate SINGLE_CELL_ROOM = P1RoomTemplate.create(P1Geometry.create(Volume3i.box(1, 1, 1)),
           ImmutableSet.of(CONNECTION_1));

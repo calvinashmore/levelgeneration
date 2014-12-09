@@ -5,15 +5,15 @@
  */
 package phase1;
 
-import com.google.common.base.Preconditions;
 import generation.ConnectionTemplate;
+import javax.annotation.Nullable;
 import math3i.Point3i;
 
 /**
  *
  * @author ashmore
  */
-public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
+public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room, P1KeyType> {
 
   /**
    * Only used for enclosure boundaries in P1Container.
@@ -34,8 +34,19 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room> {
     return matchPriority;
   }
 
+  private static final P1KeyType KEY_TYPE = new P1KeyType();
+
+  @Nullable
   @Override
-  public boolean matches(ConnectionTemplate<P1Room> other) {
+  public P1KeyType getKeyType() {
+    // TODO: replace with something substantive.
+    if(matchPriority == 0)
+      return null;
+    else return KEY_TYPE;
+  }
+
+  @Override
+  public boolean matches(ConnectionTemplate<P1Room, P1KeyType> other) {
     if(other == null)
       // note: I've waffled on this a few times; the correct behavior here is not really clear.
       // null passes

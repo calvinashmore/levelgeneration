@@ -17,14 +17,14 @@ import java.util.Set;
  *
  * @author ashmore
  */
-public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
+public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room, P1KeyType>{
 
   public P1RoomTemplateGenerator(Geometry<P1Room> geometry) {
     super(geometry);
   }
 
   @Override
-  protected boolean isValid(RoomTemplate<P1Room> template) {
+  protected boolean isValid(RoomTemplate<P1Room, P1KeyType> template) {
     P1RoomTemplate template1 = (P1RoomTemplate) template;
     // needs at least one connection that's not a wall
     boolean hasDoor = template.getConnections().stream()
@@ -48,7 +48,7 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
   }
 
   @Override
-  protected RoomTemplate<P1Room> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<P1Room>> placements) {
+  protected RoomTemplate<P1Room, P1KeyType> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> placements) {
     return P1RoomTemplate.create((P1Geometry) getGeometry(), placements);
   }
 
@@ -58,12 +58,12 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room>{
   }
 
   @Override
-  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room>... connections) {
+  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room, P1KeyType>... connections) {
     return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
   }
 
   @Override
-  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room>> connections) {
+  public P1RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room, P1KeyType>> connections) {
     return (P1RoomTemplateGenerator) super.addConnections(transform, connections);
   }
 }

@@ -15,22 +15,22 @@ import util.PrioritizedCollection;
  *
  * @author ashmore
  */
-public abstract class RoomGenerator<Parent extends Room<Parent,T>, T extends Room<T,?>> {
+public abstract class RoomGenerator<Parent extends Room<Parent,T,?>, T extends Room<T,?,?>> {
 
-  private final InProgressRoom<Parent, T> inProgressParent;
-  private final PrioritizedCollection<? extends RoomTemplate<T>> templates;
+  private final InProgressRoom<Parent, T, ?> inProgressParent;
+  private final PrioritizedCollection<? extends RoomTemplate<T,?>> templates;
 
-  public RoomGenerator(InProgressRoom<Parent, T> inProgressParent,
-          PrioritizedCollection<? extends RoomTemplate<T>> templates) {
+  public RoomGenerator(InProgressRoom<Parent, T, ?> inProgressParent,
+          PrioritizedCollection<? extends RoomTemplate<T,?>> templates) {
     this.inProgressParent = Preconditions.checkNotNull(inProgressParent);
     this.templates = Preconditions.checkNotNull(templates);
   }
 
-  public InProgressRoom<Parent, T> getInProgressParent() {
+  public InProgressRoom<Parent, T,?> getInProgressParent() {
     return inProgressParent;
   }
 
-  public PrioritizedCollection<? extends RoomTemplate<T>> getTemplates() {
+  public PrioritizedCollection<? extends RoomTemplate<T,?>> getTemplates() {
     return templates;
   }
 

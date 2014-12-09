@@ -14,7 +14,7 @@ import generation.Room;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1Room extends Room<P1Room, Room.EmptyType> {
+public abstract class P1Room extends Room<P1Room, Room.EmptyType, P1KeyType> {
 
   public static P1Room create(P1RoomTemplate template, P1Geometry.P1GeometryTransformation xform) {
     return new AutoValue_P1Room(template, xform);

@@ -84,7 +84,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
   public P1Room generateRoom() {
 
     P1ContainerProgress parent = getInProgressParent();
-    List<ConnectionTemplate.ConnectionPlacement<P1Room>> highestPriorityConnectionPlacements =
+    List<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> highestPriorityConnectionPlacements =
             parent.getHighestPriorityConnections();
     List<P1ConnectionTransformation> highestPriorityConnections = highestPriorityConnectionPlacements.stream()
             .map(placement -> (P1ConnectionTransformation) placement.getTransform())

@@ -13,16 +13,16 @@ import java.util.Set;
  * Denotes a finished and rendered room.
  * @param <T> Defines the type of the room. Subclass types will be used to parameterize other types.
  */
-public abstract class Room <T extends Room<T,Child>, Child extends Room<Child,?>> {
+public abstract class Room <T extends Room<T,Child,K>, Child extends Room<Child,?,?>, K extends KeyType> {
 
   /**
    * this would be parent type of top level, child type of lowest level.
    */
-  public static abstract class EmptyType extends Room<EmptyType, EmptyType> {
+  public static abstract class EmptyType extends Room<EmptyType, EmptyType,KeyType> {
     private EmptyType() {}
   }
 
-  public abstract RoomTemplate<T> getTemplate();
+  public abstract RoomTemplate<T, K> getTemplate();
   public abstract ImmutableSet<Child> getChildren();
   public abstract Geometry.GeometryTransformation<T> getGeometryTransformation();
 
@@ -30,8 +30,8 @@ public abstract class Room <T extends Room<T,Child>, Child extends Room<Child,?>
     return getGeometryTransformation().transform(getTemplate().getGeometry());
   }
 
-  public Set<ConnectionTemplate.ConnectionPlacement<T>> getConnectionPlacements() {
-    Set<ConnectionTemplate.ConnectionPlacement<T>> placements = new HashSet<>();
+  public Set<ConnectionTemplate.ConnectionPlacement<T, K>> getConnectionPlacements() {
+    Set<ConnectionTemplate.ConnectionPlacement<T, K>> placements = new HashSet<>();
 
     getTemplate().getConnections().stream().forEach((placement) -> {
       placements.add(placement.transform(getGeometryTransformation()));

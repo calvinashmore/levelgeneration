@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author ashmore
  */
-public abstract class ConnectionTransformation<T extends Room<T, ?>> {
+public abstract class ConnectionTransformation<T extends Room<T, ?, ?>> {
 
   public abstract ConnectionTransformation<T> transform(Geometry.GeometryTransformation<T> xform);
 
@@ -29,7 +29,7 @@ public abstract class ConnectionTransformation<T extends Room<T, ?>> {
     return equivalence;
   }
 
-  public static final class ConnectionTransformationEquivalence<T extends Room<T, ?>> {
+  public static final class ConnectionTransformationEquivalence<T extends Room<T, ?, ?>> {
 
     private final int hash;
     private final ConnectionTransformation<T> xform1;

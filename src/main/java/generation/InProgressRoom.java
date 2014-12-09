@@ -22,24 +22,31 @@ import javax.annotation.Nullable;
 /**
  * Mutable class representing a room of type T that has children of type Child.
  */
-public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room<Child,?>> {
+public abstract class InProgressRoom<
+        T extends Room<T,Child,?>,
+        Child extends Room<Child,?,ChildKey>,
+        ChildKey extends KeyType> {
 
   private final List<Child> children = new ArrayList<>();
-  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> parentConnections = new HashMap<>();
-  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> openConnections = new HashMap<>();
+  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+          ConnectionTemplate.ConnectionPlacement<Child,ChildKey>> parentConnections = new HashMap<>();
+  private final Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+          ConnectionTemplate.ConnectionPlacement<Child,ChildKey>> openConnections = new HashMap<>();
 
   public void addChild(Child child) {
     children.add(child);
 
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> childPlacements = child.getConnectionPlacements();
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> childPlacements =
+        child.getConnectionPlacements();
 
     // connections from the child that are matched by openConnections.
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> matchedConnections = childPlacements.stream()
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> matchedConnections =
+        childPlacements.stream()
             .filter(t -> openConnections.containsKey(t.getTransform().getEquivalence()))
             .collect(Collectors.toSet());
 
     // connections that are not yet matched
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> unmatchedConnections =
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> unmatchedConnections =
             Sets.difference(childPlacements, matchedConnections);
 
     // assume at this stage that all connections match; any unmatched connections are open.
@@ -53,15 +60,17 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
       throw new IllegalArgumentException("Attempting to remove child that is not present: "+child);
     }
 
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> childPlacements = child.getConnectionPlacements();
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> childPlacements =
+        child.getConnectionPlacements();
 
     // connections from the child that are matched by openConnections.
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> matchedConnections = childPlacements.stream()
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> matchedConnections =
+        childPlacements.stream()
             .filter(t -> openConnections.containsKey(t.getTransform().getEquivalence()))
             .collect(Collectors.toSet());
 
     // connections that are not yet matched
-    Set<ConnectionTemplate.ConnectionPlacement<Child>> unmatchedConnections =
+    Set<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> unmatchedConnections =
             Sets.difference(childPlacements, matchedConnections);
 
     // We are removing all open connections that are only opened by the child we are removing
@@ -76,20 +85,21 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
   /**
    * Add a connection connecting this room to the outside world.
    */
-  public void addParentConnection(ConnectionTemplate.ConnectionPlacement<Child> connection) {
+  public void addParentConnection(ConnectionTemplate.ConnectionPlacement<Child, ChildKey> connection) {
     parentConnections.put(connection.getTransform().getEquivalence(), connection);
     addConnection(connection);
   }
 
-  private void addConnection(ConnectionTemplate.ConnectionPlacement<Child> connection) {
+  private void addConnection(ConnectionTemplate.ConnectionPlacement<Child, ChildKey> connection) {
     openConnections.put(connection.getTransform().getEquivalence(), connection);
   }
 
-  public Collection<ConnectionTemplate.ConnectionPlacement<Child>> getOpenConnections() {
+  public Collection<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> getOpenConnections() {
     return openConnections.values();
   }
 
-  public Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>, ConnectionTemplate.ConnectionPlacement<Child>> getParentConnections() {
+  public Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
+        ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> getParentConnections() {
     return ImmutableMap.copyOf(parentConnections);
   }
 
@@ -103,7 +113,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * that we can encourage creation of the right kinds of features. Note that
    * walls are also connections, and should have low priority.
    */
-  public List<ConnectionTemplate.ConnectionPlacement<Child>> getHighestPriorityConnections() {
+  public List<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> getHighestPriorityConnections() {
     if(openConnections.isEmpty())
       return ImmutableList.of();
 
@@ -122,7 +132,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * Return the connection at the given transform if it exists, null otherwise.
    */
   @Nullable
-  public ConnectionTemplate.ConnectionPlacement<Child> getConnectionAt(ConnectionTransformation<Child> connectionTransform) {
+  public ConnectionTemplate.ConnectionPlacement<Child, ChildKey> getConnectionAt(ConnectionTransformation<Child> connectionTransform) {
     return openConnections.get(connectionTransform.getEquivalence());
   }
 
@@ -135,9 +145,9 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * Return true if the connections given by the provided template can correctly match the connections already present.
    * Logically, we check all connections whose placement match, and then fail if the connection types do not match.
    */
-  public boolean connectionsMatch(RoomTemplate<Child> template, Geometry.GeometryTransformation<Child> transform) {
+  public boolean connectionsMatch(RoomTemplate<Child, ChildKey> template, Geometry.GeometryTransformation<Child> transform) {
 
-    List<ConnectionTemplate.ConnectionPlacement<Child>> roomConnections = template.getConnections().stream()
+    List<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> roomConnections = template.getConnections().stream()
             .map(c -> c.transform(transform))
             .collect(Collectors.toList());
 
@@ -146,7 +156,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
     }
 
     Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
-            ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap =
+            ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> roomConnectionMap =
             roomConnections.stream().collect(Collectors.toMap(t -> t.getTransform().getEquivalence(), Function.identity()));
 
     if (!checkOpenConnectionsMatch(roomConnectionMap)) {
@@ -160,10 +170,10 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    * Check that all of the outgoing connections from a child room will match the
    * open connections in the in-progress room.
    */
-  private boolean checkRoomConnectionsMatch(List<ConnectionTemplate.ConnectionPlacement<Child>> roomConnections) {
+  private boolean checkRoomConnectionsMatch(List<ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> roomConnections) {
     // check that all room connections match with the parent connections
-    for (ConnectionTemplate.ConnectionPlacement<Child> roomConnection : roomConnections) {
-      ConnectionTemplate.ConnectionPlacement<Child> parentConnection = getConnectionAt(roomConnection.getTransform());
+    for (ConnectionTemplate.ConnectionPlacement<Child, ChildKey> roomConnection : roomConnections) {
+      ConnectionTemplate.ConnectionPlacement<Child, ChildKey> parentConnection = getConnectionAt(roomConnection.getTransform());
       if (parentConnection != null && !parentConnection.matches(roomConnection)) {
         return false;
       }
@@ -181,10 +191,10 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
    */
   private boolean checkOpenConnectionsMatch(
           Map<ConnectionTransformation.ConnectionTransformationEquivalence<Child>,
-          ConnectionTemplate.ConnectionPlacement<Child>> roomConnectionMap) {
+          ConnectionTemplate.ConnectionPlacement<Child, ChildKey>> roomConnectionMap) {
     // check that all parent connections match with the child connections
-    for (ConnectionTemplate.ConnectionPlacement<Child> parentConnection : openConnections.values()) {
-      ConnectionTemplate.ConnectionPlacement<Child> roomConnection =
+    for (ConnectionTemplate.ConnectionPlacement<Child, ChildKey> parentConnection : openConnections.values()) {
+      ConnectionTemplate.ConnectionPlacement<Child, ChildKey> roomConnection =
               roomConnectionMap.get(parentConnection.getTransform().getEquivalence());
       if (roomConnection != null && !roomConnection.matches(parentConnection)) {
         return false;
@@ -196,7 +206,7 @@ public abstract class InProgressRoom<T extends Room<T,Child>, Child extends Room
   /**
    * Return true if the child template and transform can be placed in this in-progress room.
    */
-  public boolean isValidChildPlacement(RoomTemplate<Child> template, Geometry.GeometryTransformation<Child> transform) {
+  public boolean isValidChildPlacement(RoomTemplate<Child, ChildKey> template, Geometry.GeometryTransformation<Child> transform) {
     return geometryMatches(transform.transform(template.getGeometry()))
         && connectionsMatch(template, transform);
   }
