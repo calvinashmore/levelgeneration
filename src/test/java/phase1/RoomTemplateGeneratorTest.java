@@ -9,6 +9,7 @@ import generation.RoomTemplateGenerator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
+import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
 import math3i.Point3i;
 import math3i.Volume3i;
@@ -36,15 +37,11 @@ public class RoomTemplateGeneratorTest {
             P1ConnectionTemplate.WALL,
             P1ConnectionTemplate.DOOR_1);
 
-    Truth.assertThat(generator.generateTemplates()).containsExactlyElementsIn(ImmutableList.of(
-        P1RoomTemplate.create(geometry, ImmutableSet.of(
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c1),
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c2))),
-        P1RoomTemplate.create(geometry, ImmutableSet.of(
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, c1),
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c2))),
-        P1RoomTemplate.create(geometry, ImmutableSet.of(
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c1),
-            ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, c2)))));
+    Truth.assertThat(generator.generateTemplates()).containsExactlyElementsIn(ImmutableList.of(P1RoomTemplate.create(geometry, ImmutableSet.of(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c1),
+            ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c2))),
+        P1RoomTemplate.create(geometry, ImmutableSet.of(ConnectionPlacement.create(P1ConnectionTemplate.WALL, c1),
+            ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c2))),
+        P1RoomTemplate.create(geometry, ImmutableSet.of(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, c1),
+            ConnectionPlacement.create(P1ConnectionTemplate.WALL, c2)))));
   }
 }

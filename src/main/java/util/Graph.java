@@ -6,6 +6,7 @@
 package util;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
@@ -35,6 +36,10 @@ public class Graph<T, C> {
     this.allConnections = allConnections;
   }
 
+  public Set<T> getAllNodes() {
+    return allConnections.keySet();
+  }
+
   /**
    * Creates a graph where all the nodes are connected to each other using the given connection type.
    */
@@ -52,14 +57,21 @@ public class Graph<T, C> {
    * Note that this will throw an IllegalStateException if any transformed nodes coincide with each other.
    */
   public <T2> Graph<T2,C> transformNodes(Function<T,T2> nodeFunction) {
-    Map<T2, Collection<Connection<T2, C>>> collect = allConnections.asMap().entrySet().stream()
+    Map<T2, Collection<Connection<T2, C>>> transformedMap = allConnections.asMap().entrySet().stream()
         .collect(Collectors.toMap(
             entry -> nodeFunction.apply(entry.getKey()),
             entry -> entry.getValue().stream()
                 .map(c -> Connection.create(c.type(), nodeFunction.apply(c.getNode1()), nodeFunction.apply(c.getNode2())))
                 .collect(Collectors.toList())));
 
-    return new Graph<>(Multimaps.newSetMultimap(collect, HashSet::new));
+    // using long form for now...
+    SetMultimap<T2,Connection<T2, C>> multimap = HashMultimap.create();
+    for (Map.Entry<T2,Collection<Connection<T2, C>>> entry : transformedMap.entrySet()) {
+      multimap.putAll(entry.getKey(), entry.getValue());
+    }
+    return new Graph<>(multimap);
+    // this should be working, why isn't it?
+//    return new Graph<>(Multimaps.newSetMultimap(transformedMap, HashSet::new));
   }
 
   /**
@@ -70,6 +82,7 @@ public class Graph<T, C> {
   }
 
   public void connect(C connectionType, T node1, T node2) {
+    Preconditions.checkArgument(connectionType != null);
     // note: could add a disconnect, but whatever.
     Connection<T,C> connection = Connection.create(connectionType, node1, node2);
     allConnections.put(node1, connection);
@@ -88,10 +101,17 @@ public class Graph<T, C> {
   }
 
   private Set<T> findAccessibleNodes(T node, Set<C> allowableConnections) {
-    return allConnections.get(node).stream()
-            .filter(c -> allowableConnections.contains(c.type()))
-            .map(c -> node.equals(c.getNode1()) ? c.getNode2() : c.getNode1() )
+    return getConnections(node).entrySet().stream()
+            .filter(entry -> allowableConnections.contains(entry.getValue()))
+            .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
+  }
+
+  public Map<T,C> getConnections(T node) {
+    return allConnections.get(node).stream()
+            .collect(Collectors.toMap(
+                    c -> node.equals(c.getNode1()) ? c.getNode2() : c.getNode1(),
+                    c -> c.type()));
   }
 
   @AutoValue

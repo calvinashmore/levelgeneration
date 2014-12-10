@@ -25,6 +25,7 @@ import phase1.P1RoomGenerator;
 import phase1.P1RoomTemplate;
 import phase1.P1RoomTemplateGenerator;
 import phase1.renderer.ConnectionRenderer;
+import phase1.renderer.GraphRenderer;
 import phase1.renderer.VolumeRenderer;
 import util.PrioritizedCollection;
 
@@ -88,7 +89,7 @@ public class LevelGeneration {
   public static void main(String[] args) {
     // TODO code application logic here
 
-    P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(20, 20, 1));
+    P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(10, 10, 1));
     container.addParentConnection(P1ConnectionTemplate.placement(
             P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), P1Geometry.WEST));
 
@@ -127,8 +128,9 @@ public class LevelGeneration {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         AffineTransform transform = g2.getTransform();
-        g2.scale(.25, .25);
+        g2.scale(.5, .5);
         container.getChildren().forEach(room -> renderRoom(g2, room));
+        GRAPH_RENDERER.render(container.buildConnectionGraph(), g2);
         g2.setTransform(transform);
       }
     };
@@ -143,6 +145,7 @@ public class LevelGeneration {
 
   private static final VolumeRenderer VOLUME_RENDERER = new VolumeRenderer();
   private static final ConnectionRenderer CONNECTION_RENDERER = new ConnectionRenderer();
+  private static final GraphRenderer GRAPH_RENDERER = new GraphRenderer();
 
   private static void renderRoom(Graphics2D g, P1Room room) {
 

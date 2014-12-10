@@ -242,7 +242,9 @@ public abstract class InProgressRoom<
       // add external connections
       // note that this is going to add each internal connection twice.
       for (ConnectionPlacement<Child, ChildKey> placement : child.getConnectionPlacements()) {
-        graph.connect(placement.getConnection().getKeyType(), placement, placement.getOpposite());
+        if(placement.getConnection().getKeyType() != null) {
+          graph.connect(placement.getConnection().getKeyType(), placement, placement.getOpposite());
+        }
       }
     }
 

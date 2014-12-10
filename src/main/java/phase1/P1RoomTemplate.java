@@ -54,7 +54,10 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room, P1KeyType> 
 
   @Override
   public Graph<ConnectionPlacement<P1Room, P1KeyType>, P1KeyType> getConnectivityGraph() {
-    return Graph.createSaturatedGraph(getConnections(), P1KeyType.NORMAL);
+    return Graph.createSaturatedGraph(
+            getConnections().stream().filter(
+                    c -> c.getConnection().getKeyType() != null).collect(Collectors.toList()),
+            P1KeyType.NORMAL);
   }
 
   public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionPlacement<P1Room, P1KeyType>> connections) {
