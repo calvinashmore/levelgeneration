@@ -148,8 +148,8 @@ public class LevelGeneration {
 
     VOLUME_RENDERER.render(room.getTransformedGeometry().getVolume(), 0, g);
     room.getConnectionPlacements().stream()
-            .filter(placement -> placement.getConnection() != P1ConnectionTemplate.WALL)
-            .forEach(placement -> {
+            .filter((generation.ConnectionPlacement<phase1.P1Room, phase1.P1KeyType> placement) -> placement.getConnection() != P1ConnectionTemplate.WALL)
+            .forEach((generation.ConnectionPlacement<phase1.P1Room, phase1.P1KeyType> placement) -> {
       CONNECTION_RENDERER.render((P1ConnectionTransformation) placement.getTransform(), g);
     });
   }

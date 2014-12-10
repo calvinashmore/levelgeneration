@@ -30,10 +30,10 @@ public abstract class Room <T extends Room<T,Child,K>, Child extends Room<Child,
     return getGeometryTransformation().transform(getTemplate().getGeometry());
   }
 
-  public Set<ConnectionTemplate.ConnectionPlacement<T, K>> getConnectionPlacements() {
-    Set<ConnectionTemplate.ConnectionPlacement<T, K>> placements = new HashSet<>();
+  public Set<ConnectionPlacement<T, K>> getConnectionPlacements() {
+    Set<ConnectionPlacement<T, K>> placements = new HashSet<>();
 
-    getTemplate().getConnections().stream().forEach((placement) -> {
+    getTemplate().getConnections().stream().forEach((generation.ConnectionPlacement<T, K> placement) -> {
       placements.add(placement.transform(getGeometryTransformation()));
     });
     return placements;

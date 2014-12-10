@@ -6,6 +6,7 @@
 package phase1;
 
 import com.google.common.collect.ImmutableSet;
+import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
 import generation.ConnectionTransformation;
 import generation.RoomGenerator;
@@ -72,7 +73,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
             .map(transform -> P1Geometry.P1GeometryTransformation.create(transform))
             .filter(geom -> getInProgressParent().isValidChildPlacement(template, geom))
             .filter(geom -> template.getConnections().stream()
-                .map(ConnectionTemplate.ConnectionPlacement::getTransform)
+                .map(ConnectionPlacement::getTransform)
                 .map(transform -> transform.transform(geom))
                 .anyMatch(t -> highestPriorityConnections.stream()
                     .anyMatch(t::matches)))
@@ -84,7 +85,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
   public P1Room generateRoom() {
 
     P1ContainerProgress parent = getInProgressParent();
-    List<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> highestPriorityConnectionPlacements =
+    List<ConnectionPlacement<P1Room, P1KeyType>> highestPriorityConnectionPlacements =
             parent.getHighestPriorityConnections();
     List<P1ConnectionTransformation> highestPriorityConnections = highestPriorityConnectionPlacements.stream()
             .map(placement -> (P1ConnectionTransformation) placement.getTransform())

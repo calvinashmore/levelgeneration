@@ -5,6 +5,7 @@
  */
 package phase1;
 
+import generation.ConnectionPlacement;
 import generation.Geometry;
 import generation.InProgressRoom;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ public class P1ContainerProgress extends InProgressRoom<P1Container, P1Room, P1K
   private void setEnclosure() {
     for(P1ConnectionTransformation connectionTransform :
             P1ConnectionTransformation.getBoundaries(getEnclosingVolume())) {
-      addParentConnection(P1ConnectionTemplate.ConnectionPlacement.create(
+      addParentConnection(ConnectionPlacement.create(
               P1ConnectionTemplate.WALL, connectionTransform));
     }
   }

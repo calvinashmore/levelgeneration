@@ -94,7 +94,7 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?,K>, K extends Key
    */
   abstract protected boolean isValid(RoomTemplate<T,K> template);
 
-  abstract protected RoomTemplate<T,K> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<T,K>> placements);
+  abstract protected RoomTemplate<T,K> createTemplate(Set<ConnectionPlacement<T,K>> placements);
 
   /**
    * Generates templates using every possible combination of the possibleConnections.
@@ -102,7 +102,7 @@ public abstract class RoomTemplateGenerator<T extends Room<T,?,K>, K extends Key
   public Iterable<? extends RoomTemplate<T,K>> generateTemplates() {
     return explode(possibleConnections).stream()
             .map(mappings -> mappings.entrySet().stream()
-                .map(entry -> ConnectionTemplate.ConnectionPlacement.create(entry.getValue(), entry.getKey()))
+                .map(entry -> ConnectionPlacement.create(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toSet()))
             .map(this::createTemplate)
             .filter(this::isValid)

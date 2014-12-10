@@ -11,6 +11,7 @@ import generation.KeyType;
  *
  * @author ashmore
  */
-public class P1KeyType implements KeyType {
+public enum P1KeyType implements KeyType {
 
+  NORMAL, RED_KEY
 }

@@ -6,6 +6,7 @@
 package generation;
 
 import java.util.Set;
+import util.Graph;
 
 /**
  *
@@ -14,7 +15,14 @@ import java.util.Set;
 public interface RoomTemplate<T extends Room<T,?, K>, K extends KeyType> {
 
   Geometry<T> getGeometry();
-  Set<ConnectionTemplate.ConnectionPlacement<T, K>> getConnections();
+  Set<ConnectionPlacement<T, K>> getConnections();
+
+  /**
+   * Returns the *untransformed* connectivity graph between the outgoing connections of this room.
+   * For instance, if a room has an obstacle preventing passage from one side to another, that could
+   * be expressed here. Otherwise it is recommended to use a saturated graph.
+   */
+  public Graph<ConnectionPlacement<T, K>, K> getConnectivityGraph();
 
   public interface RoomPlacement<T extends Room<T,?,K>, K extends KeyType> {
     RoomTemplate<T,K> getConnection();

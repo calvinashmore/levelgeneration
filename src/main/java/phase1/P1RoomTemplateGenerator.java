@@ -5,6 +5,7 @@
  */
 package phase1;
 
+import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
 import generation.ConnectionTransformation;
 import generation.Geometry;
@@ -28,13 +29,13 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room, P1Key
     P1RoomTemplate template1 = (P1RoomTemplate) template;
     // needs at least one connection that's not a wall
     boolean hasDoor = template.getConnections().stream()
-            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .map(ConnectionPlacement::getConnection)
             .map(ConnectionTemplate::getMatchPriority)
             .anyMatch(v -> v > 0);
 
     boolean hasAdjacentDoors = template.getConnections().stream()
             .filter(placement -> placement.getConnection().getMatchPriority() > 0)
-            .map(ConnectionTemplate.ConnectionPlacement::getTransform)
+            .map(ConnectionPlacement::getTransform)
             .anyMatch(xform -> {
               P1ConnectionTransformation xform1 = (P1ConnectionTransformation) xform;
               return P1Geometry.DIRECTIONS.stream()
@@ -48,7 +49,7 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room, P1Key
   }
 
   @Override
-  protected RoomTemplate<P1Room, P1KeyType> createTemplate(Set<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> placements) {
+  protected RoomTemplate<P1Room, P1KeyType> createTemplate(Set<ConnectionPlacement<P1Room, P1KeyType>> placements) {
     return P1RoomTemplate.create((P1Geometry) getGeometry(), placements);
   }
 

@@ -8,14 +8,17 @@ package phase1;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
 import generation.ConnectionTransformation;
 import generation.RoomTemplate;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import math3i.Point3i;
+import util.Graph;
 
 /**
  *
@@ -28,11 +31,11 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room, P1KeyType> 
   public abstract P1Geometry getGeometry();
 
   @Override
-  public abstract ImmutableSet<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> getConnections();
+  public abstract ImmutableSet<ConnectionPlacement<P1Room, P1KeyType>> getConnections();
 
   public int getNumberOfDoors() {
     return (int) getConnections().stream()
-            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .map(ConnectionPlacement::getConnection)
             .map(ConnectionTemplate::getMatchPriority)
             .filter(priority -> priority > 0)
             .count();
@@ -45,13 +48,18 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room, P1KeyType> 
                     ((P1ConnectionTransformation) placement.getTransform()).getPosition().equals(position)
                  && ((P1ConnectionTransformation) placement.getTransform()).getFacing().equals(direction))
             .findAny()
-            .map(ConnectionTemplate.ConnectionPlacement::getConnection)
+            .map(ConnectionPlacement::getConnection)
             .orElse(null);
   }
 
-  public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> connections) {
+  @Override
+  public Graph<ConnectionPlacement<P1Room, P1KeyType>, P1KeyType> getConnectivityGraph() {
+    return Graph.createSaturatedGraph(getConnections(), P1KeyType.NORMAL);
+  }
 
-    for(ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType> connection : connections) {
+  public static P1RoomTemplate create(P1Geometry geometry, Set<ConnectionPlacement<P1Room, P1KeyType>> connections) {
+
+    for(ConnectionPlacement<P1Room, P1KeyType> connection : connections) {
       P1ConnectionTransformation transform = (P1ConnectionTransformation) connection.getTransform();
       Preconditions.checkArgument(
               geometry.getVolume().contains(transform.getPosition()),
@@ -64,13 +72,13 @@ public abstract class P1RoomTemplate implements RoomTemplate<P1Room, P1KeyType> 
     }
 
     Map<ConnectionTransformation.ConnectionTransformationEquivalence<P1Room>,
-            ConnectionTemplate.ConnectionPlacement<P1Room, P1KeyType>> walls =
+            ConnectionPlacement<P1Room, P1KeyType>> walls =
         P1ConnectionTransformation.getBoundaries(geometry.getVolume()).stream()
-            .map((phase1.P1ConnectionTransformation t) -> ConnectionTemplate.ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
-            .collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), p -> p));
+            .map(t -> ConnectionPlacement.create(P1ConnectionTemplate.WALL, t) )
+            .collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), Function.identity()));
 
     // add the external connections to the walls.
-    walls.putAll(connections.stream().collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), p -> p)));
+    walls.putAll(connections.stream().collect(Collectors.toMap(p -> p.getTransform().getEquivalence(), Function.identity())));
 
     return new AutoValue_P1RoomTemplate(geometry, ImmutableSet.copyOf(walls.values()));
   }
