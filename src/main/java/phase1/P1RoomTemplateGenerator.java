@@ -11,6 +11,7 @@ import generation.ConnectionTransformation;
 import generation.Geometry;
 import generation.RoomTemplate;
 import generation.RoomTemplateGenerator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -54,8 +55,8 @@ public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room, P1Key
   }
 
   @Override
-  public Iterable<P1RoomTemplate> generateTemplates() {
-    return (Iterable<P1RoomTemplate>) super.generateTemplates();
+  public List<P1RoomTemplate> generateTemplates() {
+    return (List<P1RoomTemplate>) super.generateTemplates();
   }
 
   @Override

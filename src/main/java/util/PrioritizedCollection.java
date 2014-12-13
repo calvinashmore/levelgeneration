@@ -8,11 +8,11 @@ package util;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -50,16 +50,21 @@ public class PrioritizedCollection<T> {
   /**
    * Add the following entries so that the sum of all possibilities has the same weight.
    */
-  public void addEntries(Iterable<T> values, double weight, int priority) {
+  public void addEntries(Collection<T> values, double weight, int priority) {
     double itemWeight = weight / Iterables.size(values);
     values.forEach(value -> {addEntry(value, itemWeight, priority);});
   }
 
   /**
-   * Add the following entries using the given weighting function
+   * Add the following entries using the given weighting function.
    */
-  public void addEntries(Iterable<T> values, Function<T, Double> weightFunction, int priority) {
-    values.forEach(value -> {addEntry(value, weightFunction.apply(value), priority);});
+  public void addEntries(Collection<T> values, Function<T, Double> weightFunction, double totalWeight, int priority) {
+
+    double summedWeight = values.stream()
+            .collect(Collectors.summingDouble(weightFunction::apply));
+
+    double scale = totalWeight / summedWeight;
+    values.forEach(value -> {addEntry(value, scale*weightFunction.apply(value), priority);});
   }
 
   public List<T> getAllValues() {
@@ -71,14 +76,17 @@ public class PrioritizedCollection<T> {
    */
   @Nullable
   public T choose(Predicate<T> predicate, Random random) {
-    Iterable<Entry<T>> filteredEntries = Iterables.filter(entries, t -> predicate.apply(t.getValue()));
+    List<Entry<T>> filteredEntries = entries.stream()
+            .filter(t -> predicate.apply(t.getValue()))
+            .collect(Collectors.toList());
     if (Iterables.isEmpty(filteredEntries)) {
       return null;
     }
 
     int maximumPriority = Ordering.natural().max(Iterables.transform(filteredEntries, Entry::getPriority));
-    filteredEntries = Iterables.filter(filteredEntries,
-            Predicates.compose(Predicates.equalTo(maximumPriority), Entry::getPriority));
+    filteredEntries = filteredEntries.stream()
+            .filter(t -> t.getPriority() == maximumPriority)
+            .collect(Collectors.toList());
 
     if(Iterables.isEmpty(filteredEntries)) {
       return null;
@@ -97,6 +105,8 @@ public class PrioritizedCollection<T> {
     // should not get here.
     throw new IllegalStateException();
   }
+
+
 
   public ImmutableList<Entry<T>> getEntries() {
     return ImmutableList.copyOf(entries);

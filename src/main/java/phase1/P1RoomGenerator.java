@@ -95,6 +95,7 @@ public class P1RoomGenerator extends RoomGenerator<P1Container, P1Room> {
       return null;
     }
 
+    // **** getPossibleTransform returns weights/??
     Map<P1RoomTemplate, List<P1Geometry.P1GeometryTransformation>> templateToTransforms =
         getTemplates().getAllValues().stream()
             .collect(Collectors.toMap(Function.identity(), t -> getPossibleTransformations(t, highestPriorityConnections)));

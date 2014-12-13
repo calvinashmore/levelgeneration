@@ -48,6 +48,14 @@ public class LevelGeneration {
           .addConnections(P1Geometry.connection(Point3i.create(1,0,0), P1Geometry.NORTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
           .addConnections(P1Geometry.connection(Point3i.create(1,2,0), P1Geometry.SOUTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL);
 
+  private static final P1RoomTemplateGenerator HALLWAY1 = new P1RoomTemplateGenerator(P1Geometry.create(Volume3i.box(7, 1, 1)))
+          .addConnections(P1Geometry.connection(Point3i.create(0,0,0), P1Geometry.WEST), P1ConnectionTemplate.DOOR_1)
+          .addConnections(P1Geometry.connection(Point3i.create(6,0,0), P1Geometry.EAST), P1ConnectionTemplate.DOOR_1)
+          .addConnections(P1Geometry.connection(Point3i.create(2,0,0), P1Geometry.NORTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
+          .addConnections(P1Geometry.connection(Point3i.create(2,0,0), P1Geometry.SOUTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
+          .addConnections(P1Geometry.connection(Point3i.create(4,0,0), P1Geometry.NORTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL)
+          .addConnections(P1Geometry.connection(Point3i.create(4,0,0), P1Geometry.SOUTH), P1ConnectionTemplate.DOOR_1, P1ConnectionTemplate.WALL);
+
   private static final P1RoomTemplateGenerator TINY_HALLWAY1 = new P1RoomTemplateGenerator(P1Geometry.create(Volume3i.box(3, 1, 1)))
           .addConnections(P1Geometry.connection(Point3i.create(0,0,0), P1Geometry.WEST), P1ConnectionTemplate.DOOR_1)
           .addConnections(P1Geometry.connection(Point3i.create(2,0,0), P1Geometry.EAST), P1ConnectionTemplate.DOOR_1)
@@ -87,17 +95,16 @@ public class LevelGeneration {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    // TODO code application logic here
-
     P1ContainerProgress container = new P1ContainerProgress(Volume3i.box(10, 10, 1));
     container.addParentConnection(P1ConnectionTemplate.placement(
             P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), P1Geometry.WEST));
 
     PrioritizedCollection<P1RoomTemplate> templates = new PrioritizedCollection<>();
     templates.addEntries(SINGLE_CELL_ROOM.generateTemplates(),
-            template -> 0.5/template.getNumberOfDoors(), 0);
+            template -> 0.5/template.getNumberOfDoors(), 1, 1);
     templates.addEntries(BIG_ROOM.generateTemplates(),
-            template -> template.getNumberOfDoors() == 2 ? 1.0 : 0.5, 1);
+            template -> template.getNumberOfDoors() == 2 ? 1.0 : 0.5, 1, 1);
+    templates.addEntries(HALLWAY1.generateTemplates(), 1.1, 1);
     templates.addEntries(TINY_HALLWAY1.generateTemplates(), 1, 1);
     templates.addEntries(TINY_HALLWAY2.generateTemplates(), 1, 1);
     templates.addEntries(L_HALLWAY1.generateTemplates(), 1.2, 1);
