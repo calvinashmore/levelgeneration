@@ -24,9 +24,9 @@ import phase1.P1Room;
 import phase1.P1RoomGenerator;
 import phase1.P1RoomTemplate;
 import phase1.P1RoomTemplateGenerator;
-import phase1.renderer.ConnectionRenderer;
-import phase1.renderer.GraphRenderer;
-import phase1.renderer.VolumeRenderer;
+import generation.v3room.renderer.ConnectionRenderer;
+import generation.v3room.renderer.GraphRenderer;
+import generation.v3room.renderer.VolumeRenderer;
 import util.PrioritizedCollection;
 
 /**

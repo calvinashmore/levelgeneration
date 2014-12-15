@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package phase1.renderer;
+package generation.v3room.renderer;
 
 import generation.ConnectionPlacement;
+import generation.KeyType;
+import generation.Room;
 import generation.v3room.V3ConnectionTransformation;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import phase1.P1KeyType;
-import phase1.P1Room;
 import util.Graph;
 
 /**
@@ -35,10 +35,10 @@ public class GraphRenderer {
     this.lineColor = lineColor;
   }
 
-  public void render(Graph<ConnectionPlacement<P1Room, P1KeyType>, P1KeyType> graph, Graphics2D g) {
+  public <T extends Room<T,?,K>, K extends KeyType> void render(Graph<ConnectionPlacement<T, K>, K> graph, Graphics2D g) {
 
-    for (ConnectionPlacement<P1Room, P1KeyType> placement1 : graph.getAllNodes()) {
-      for (ConnectionPlacement<P1Room, P1KeyType> placement2 : graph.getConnections(placement1).keySet()) {
+    for (ConnectionPlacement<T, K> placement1 : graph.getAllNodes()) {
+      for (ConnectionPlacement<T, K> placement2 : graph.getConnections(placement1).keySet()) {
         V3ConnectionTransformation transform1 = (V3ConnectionTransformation) placement1.getTransform();
         V3ConnectionTransformation transform2 = (V3ConnectionTransformation) placement2.getTransform();
 

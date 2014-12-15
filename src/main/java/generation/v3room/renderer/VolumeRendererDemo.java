@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package phase1.renderer;
+package generation.v3room.renderer;
 
 import com.google.common.collect.ImmutableList;
 import generation.v3room.V3ConnectionTransformation;
