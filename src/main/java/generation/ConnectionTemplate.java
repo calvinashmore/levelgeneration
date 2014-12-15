@@ -5,7 +5,6 @@
  */
 package generation;
 
-import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
 

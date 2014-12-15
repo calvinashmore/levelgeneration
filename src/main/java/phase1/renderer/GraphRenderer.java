@@ -6,10 +6,10 @@
 package phase1.renderer;
 
 import generation.ConnectionPlacement;
+import generation.v3room.V3ConnectionTransformation;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import phase1.P1ConnectionTransformation;
 import phase1.P1KeyType;
 import phase1.P1Room;
 import util.Graph;
@@ -39,8 +39,8 @@ public class GraphRenderer {
 
     for (ConnectionPlacement<P1Room, P1KeyType> placement1 : graph.getAllNodes()) {
       for (ConnectionPlacement<P1Room, P1KeyType> placement2 : graph.getConnections(placement1).keySet()) {
-        P1ConnectionTransformation transform1 = (P1ConnectionTransformation) placement1.getTransform();
-        P1ConnectionTransformation transform2 = (P1ConnectionTransformation) placement2.getTransform();
+        V3ConnectionTransformation transform1 = (V3ConnectionTransformation) placement1.getTransform();
+        V3ConnectionTransformation transform2 = (V3ConnectionTransformation) placement2.getTransform();
 
         g.setStroke(new BasicStroke(lineWidth));
         g.setColor(lineColor);
@@ -58,13 +58,13 @@ public class GraphRenderer {
     }
   }
 
-  private int getXPos(P1ConnectionTransformation xform) {
+  private int getXPos(V3ConnectionTransformation xform) {
     return xform.getPosition().getX()*cellSize
         + cellSize/2
         + xform.getFacing().getX()*(cellSize/2 - 2*borderSize);
   }
 
-  private int getYPos(P1ConnectionTransformation xform) {
+  private int getYPos(V3ConnectionTransformation xform) {
     return xform.getPosition().getY()*cellSize
         + cellSize/2
         + xform.getFacing().getY()*(cellSize/2 - 2*borderSize);

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package phase1;
+package generation.v3room;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
@@ -19,7 +19,7 @@ import math3i.Volume3i;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1ConnectionTransformation extends ConnectionTransformation<P1Room> {
+public abstract class V3ConnectionTransformation<T extends V3Room<T,?,?>> extends ConnectionTransformation<T>  {
 
   /**
    * Position within the geometry.
@@ -31,26 +31,26 @@ public abstract class P1ConnectionTransformation extends ConnectionTransformatio
    */
   public abstract Point3i getFacing();
 
-  public static P1ConnectionTransformation create(Point3i position, Point3i facing) {
-    Preconditions.checkArgument(P1Geometry.DIRECTIONS.contains(facing));
-    return new AutoValue_P1ConnectionTransformation(position, facing);
+  public static V3ConnectionTransformation create(Point3i position, Point3i facing) {
+    Preconditions.checkArgument(V3Geometry.DIRECTIONS.contains(facing));
+    return new AutoValue_V3ConnectionTransformation(position, facing);
   }
 
   @Override
-  public ConnectionTransformation<P1Room> getOpposite() {
+  public ConnectionTransformation<T> getOpposite() {
     return create(getPosition().add(getFacing()), getFacing().multiply(-1));
   }
 
   @Override
-  public P1ConnectionTransformation transform(Geometry.GeometryTransformation<P1Room> xform) {
-    P1Geometry.P1GeometryTransformation xform1 = (P1Geometry.P1GeometryTransformation) xform;
+  public V3ConnectionTransformation transform(Geometry.GeometryTransformation<T> xform) {
+    V3Geometry.V3GeometryTransformation xform1 = (V3Geometry.V3GeometryTransformation) xform;
     return create(xform1.getTransformation().apply(getPosition()), xform1.getTransformation().applyToVector(getFacing()));
   }
 
-  public static Set<P1ConnectionTransformation> getBoundaries(Volume3i volume) {
-    Set<P1ConnectionTransformation> results = new HashSet<>();
+  public static <T extends V3Room<T,?,?>> Set<V3ConnectionTransformation<T>> getBoundaries(Volume3i volume) {
+    Set<V3ConnectionTransformation<T>> results = new HashSet<>();
     for (Point3i point : volume.getPoints()) {
-      for (Point3i direction : P1Geometry.DIRECTIONS) {
+      for (Point3i direction : V3Geometry.DIRECTIONS) {
         Point3i next = point.add(direction);
         if (!volume.contains(next)) {
           results.add(create(point, direction));
@@ -63,18 +63,17 @@ public abstract class P1ConnectionTransformation extends ConnectionTransformatio
   @Override
   public String toString() {
     String directionString;
-    if (getFacing().equals(P1Geometry.NORTH)) {
+    if (getFacing().equals(V3Geometry.NORTH)) {
       directionString = "N";
-    } else if (getFacing().equals(P1Geometry.SOUTH)) {
+    } else if (getFacing().equals(V3Geometry.SOUTH)) {
       directionString = "S";
-    } else if (getFacing().equals(P1Geometry.EAST)) {
+    } else if (getFacing().equals(V3Geometry.EAST)) {
       directionString = "E";
-    } else if (getFacing().equals(P1Geometry.WEST)) {
+    } else if (getFacing().equals(V3Geometry.WEST)) {
       directionString = "W";
     } else {
       throw new IllegalStateException();
     }
     return getPosition() + ":" + directionString;
   }
-
 }

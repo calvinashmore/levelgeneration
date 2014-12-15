@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package phase1;
+package generation.v3room;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import generation.ConnectionTransformation;
 import generation.Geometry;
 import generation.Geometry.TransformedGeometry;
-import java.util.HashSet;
 import java.util.Set;
 import math3i.Point3i;
 import math3i.Transformation3i;
@@ -22,7 +19,7 @@ import math3i.Volume3i;
  * @author ashmore
  */
 @AutoValue
-public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometry<P1Room> {
+public abstract class V3Geometry<T extends V3Room<T,?,?>> implements Geometry<T>, TransformedGeometry<T> {
 
   public static final Point3i SOUTH = Point3i.UNIT_Y;
   public static final Point3i NORTH = Point3i.UNIT_Y.multiply(-1);
@@ -32,8 +29,8 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
 
   public abstract Volume3i getVolume();
 
-  public static P1Geometry create(Volume3i volume) {
-    return new AutoValue_P1Geometry(volume);
+  public static V3Geometry create(Volume3i volume) {
+    return new AutoValue_V3Geometry(volume);
   }
 
   @Override
@@ -44,29 +41,28 @@ public abstract class P1Geometry implements Geometry<P1Room>, TransformedGeometr
   /**
    * Convenience wrapper.
    */
-  public static P1ConnectionTransformation connection(Point3i position, Point3i facing) {
-    return P1ConnectionTransformation.create(position, facing);
+  public static V3ConnectionTransformation connection(Point3i position, Point3i facing) {
+    return V3ConnectionTransformation.create(position, facing);
   }
 
   @AutoValue
-  public abstract static class P1GeometryTransformation implements GeometryTransformation<P1Room> {
+  public abstract static class V3GeometryTransformation<T extends V3Room<T,?,?>> implements GeometryTransformation<T> {
     public abstract Transformation3i getTransformation();
 
-    public static P1GeometryTransformation create(Transformation3i transformation) {
-      return new AutoValue_P1Geometry_P1GeometryTransformation(transformation);
+    public static V3GeometryTransformation create(Transformation3i transformation) {
+      return new AutoValue_V3Geometry_V3GeometryTransformation(transformation);
     }
 
     @Override
-    public P1GeometryTransformation transform(GeometryTransformation<P1Room> xform) {
-      P1GeometryTransformation xform1 = (P1GeometryTransformation) xform;
+    public V3GeometryTransformation transform(GeometryTransformation<T> xform) {
+      V3GeometryTransformation xform1 = (V3GeometryTransformation) xform;
       return create(this.getTransformation().compose(xform1.getTransformation()));
     }
 
     @Override
-    public P1Geometry transform(Geometry<P1Room> geometry) {
-      P1Geometry geometry1 = (P1Geometry) geometry;
-      return P1Geometry.create(geometry1.getVolume().transform(getTransformation()));
+    public V3Geometry transform(Geometry<T> geometry) {
+      V3Geometry geometry1 = (V3Geometry) geometry;
+      return V3Geometry.create(geometry1.getVolume().transform(getTransformation()));
     }
   }
-
 }

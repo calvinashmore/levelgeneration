@@ -8,34 +8,33 @@ package generation;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import javax.annotation.Nullable;
-import phase1.P1RoomTemplate;
 import util.PrioritizedCollection;
 
 /**
  *
  * @author ashmore
  */
-public abstract class RoomGenerator<Parent extends Room<Parent,T,?>, T extends Room<T,?,?>> {
+public abstract class RoomGenerator<Parent extends Room<Parent,T,?>, T extends Room<T,?,K>, K extends KeyType> {
 
-  private final InProgressRoom<Parent, T, ?> inProgressParent;
-  private final PrioritizedCollection<? extends RoomTemplate<T,?>> templates;
+  private final InProgressRoom<Parent, T, K> inProgressParent;
+  private final PrioritizedCollection<? extends RoomTemplate<T,K>> templates;
 
-  public RoomGenerator(InProgressRoom<Parent, T, ?> inProgressParent,
-          PrioritizedCollection<? extends RoomTemplate<T,?>> templates) {
+  public RoomGenerator(InProgressRoom<Parent, T, K> inProgressParent,
+          PrioritizedCollection<? extends RoomTemplate<T,K>> templates) {
     this.inProgressParent = Preconditions.checkNotNull(inProgressParent);
     this.templates = Preconditions.checkNotNull(templates);
   }
 
-  public InProgressRoom<Parent, T,?> getInProgressParent() {
+  public InProgressRoom<Parent, T,K> getInProgressParent() {
     return inProgressParent;
   }
 
-  public PrioritizedCollection<? extends RoomTemplate<T,?>> getTemplates() {
+  public PrioritizedCollection<? extends RoomTemplate<T,K>> getTemplates() {
     return templates;
   }
 
   public abstract List<? extends Geometry.GeometryTransformation<T>> getPossibleTransformations(
-          P1RoomTemplate template,
+          RoomTemplate<T,K> template,
           List<? extends ConnectionTransformation<T>> highestPriorityConnections);
 
   /**

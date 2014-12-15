@@ -10,7 +10,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
 import generation.ConnectionPlacement;
-import generation.ConnectionTemplate;
+import generation.v3room.V3ConnectionTransformation;
+import generation.v3room.V3Geometry;
 import math3i.Point3i;
 import math3i.Volume3i;
 import org.junit.Test;
@@ -26,10 +27,10 @@ public class RoomTemplateGeneratorTest {
 
   @Test
   public void testGenerateTemplates() {
-    P1Geometry geometry = P1Geometry.create(Volume3i.box(1, 1, 1));
+    V3Geometry geometry = V3Geometry.create(Volume3i.box(1, 1, 1));
     RoomTemplateGenerator generator = new P1RoomTemplateGenerator(geometry);
-    P1ConnectionTransformation c1 = P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.WEST);
-    P1ConnectionTransformation c2 = P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.EAST);
+    V3ConnectionTransformation c1 = V3ConnectionTransformation.create(Point3i.ZERO, V3Geometry.WEST);
+    V3ConnectionTransformation c2 = V3ConnectionTransformation.create(Point3i.ZERO, V3Geometry.EAST);
     generator.addConnections(c1,
             P1ConnectionTemplate.WALL,
             P1ConnectionTemplate.DOOR_1);

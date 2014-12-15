@@ -8,50 +8,25 @@ package phase1;
 import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
 import generation.ConnectionTransformation;
-import generation.Geometry;
 import generation.RoomTemplate;
-import generation.RoomTemplateGenerator;
+import generation.v3room.V3Geometry;
+import generation.v3room.V3RoomTemplateGenerator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
  *
  * @author ashmore
  */
-public class P1RoomTemplateGenerator extends RoomTemplateGenerator<P1Room, P1KeyType>{
+public class P1RoomTemplateGenerator extends V3RoomTemplateGenerator<P1Room, P1KeyType>{
 
-  public P1RoomTemplateGenerator(Geometry<P1Room> geometry) {
+  public P1RoomTemplateGenerator(V3Geometry<P1Room> geometry) {
     super(geometry);
   }
 
   @Override
-  protected boolean isValid(RoomTemplate<P1Room, P1KeyType> template) {
-    P1RoomTemplate template1 = (P1RoomTemplate) template;
-    // needs at least one connection that's not a wall
-    boolean hasDoor = template.getConnections().stream()
-            .map(ConnectionPlacement::getConnection)
-            .map(ConnectionTemplate::getMatchPriority)
-            .anyMatch(v -> v > 0);
-
-    boolean hasAdjacentDoors = template.getConnections().stream()
-            .filter(placement -> placement.getConnection().getMatchPriority() > 0)
-            .map(ConnectionPlacement::getTransform)
-            .anyMatch(xform -> {
-              P1ConnectionTransformation xform1 = (P1ConnectionTransformation) xform;
-              return P1Geometry.DIRECTIONS.stream()
-                      .map(direction -> template1.getConnectionAt(xform1.getPosition().add(direction), xform1.getFacing()))
-                      .filter(Objects::nonNull)
-                      .map(ConnectionTemplate::getMatchPriority)
-                      .anyMatch(priority -> priority > 0);
-            } );
-
-    return hasDoor && !hasAdjacentDoors;
-  }
-
-  @Override
   protected RoomTemplate<P1Room, P1KeyType> createTemplate(Set<ConnectionPlacement<P1Room, P1KeyType>> placements) {
-    return P1RoomTemplate.create((P1Geometry) getGeometry(), placements);
+    return P1RoomTemplate.create((V3Geometry<P1Room>) getGeometry(), placements);
   }
 
   @Override

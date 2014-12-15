@@ -7,6 +7,7 @@ package phase1;
 
 import generation.ConnectionPlacement;
 import generation.ConnectionTemplate;
+import generation.v3room.V3ConnectionTransformation;
 import javax.annotation.Nullable;
 import math3i.Point3i;
 
@@ -58,6 +59,6 @@ public enum P1ConnectionTemplate implements ConnectionTemplate<P1Room, P1KeyType
   public static ConnectionPlacement<P1Room, P1KeyType> placement(
           P1ConnectionTemplate type, Point3i position, Point3i direction) {
     return ConnectionPlacement.create(
-            type, P1ConnectionTransformation.create(position, direction));
+            type, V3ConnectionTransformation.create(position, direction));
   }
 }

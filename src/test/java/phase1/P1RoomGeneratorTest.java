@@ -9,6 +9,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.truth.Truth;
 import generation.ConnectionPlacement;
+import generation.v3room.V3ConnectionTransformation;
+import generation.v3room.V3Geometry;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -28,8 +30,8 @@ import util.PrioritizedCollection;
 @RunWith(MockitoJUnitRunner.class)
 public class P1RoomGeneratorTest {
 
-  private static final P1RoomTemplate SINGLE_CELL_ROOM = P1RoomTemplate.create(P1Geometry.create(Volume3i.box(1, 1, 1)),
-          ImmutableSet.of(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X))));
+  private static final P1RoomTemplate SINGLE_CELL_ROOM = P1RoomTemplate.create(V3Geometry.create(Volume3i.EMPTY).create(Volume3i.box(1, 1, 1)),
+          ImmutableSet.of(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, V3ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_X))));
 
   private @Mock Random random;
 
@@ -46,18 +48,18 @@ public class P1RoomGeneratorTest {
     templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
 
     // add some doors
-    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
+    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, V3ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, V3ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
-    List<P1Geometry.P1GeometryTransformation> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM,
+    List<V3Geometry.V3GeometryTransformation<P1Room>> possibleTransformations = roomGenerator.getPossibleTransformations(SINGLE_CELL_ROOM,
             container.getOpenConnections().stream()
                     .map(placement -> placement.getTransform())
                     .collect(Collectors.toList()));
 
-    List<P1Geometry.P1GeometryTransformation> expectedTransformations = ImmutableList.of(
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.rotationZ(3)),
-        P1Geometry.P1GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(1)))
+    List<V3Geometry.V3GeometryTransformation> expectedTransformations = ImmutableList.of(
+        V3Geometry.V3GeometryTransformation.create(Transformation3i.rotationZ(3)),
+        V3Geometry.V3GeometryTransformation.create(Transformation3i.translation(1, 0, 0).compose(Transformation3i.rotationZ(1)))
         );
 
     Truth.assertThat(possibleTransformations).containsExactlyElementsIn(expectedTransformations);
@@ -73,8 +75,8 @@ public class P1RoomGeneratorTest {
     templates.addEntry(SINGLE_CELL_ROOM, 1, 1);
 
     // add some doors
-    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
-    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, P1ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
+    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, V3ConnectionTransformation.create(Point3i.ZERO, Point3i.UNIT_Y)));
+    container.addParentConnection(ConnectionPlacement.create(P1ConnectionTemplate.DOOR_1, V3ConnectionTransformation.create(Point3i.UNIT_X, Point3i.UNIT_Y.multiply(-1))));
 
     P1RoomGenerator roomGenerator = buildRoomGenerator(container, templates);
 

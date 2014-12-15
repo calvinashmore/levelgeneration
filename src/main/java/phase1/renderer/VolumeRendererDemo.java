@@ -6,6 +6,8 @@
 package phase1.renderer;
 
 import com.google.common.collect.ImmutableList;
+import generation.v3room.V3ConnectionTransformation;
+import generation.v3room.V3Geometry;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,8 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import math3i.Point3i;
 import math3i.Volume3i;
-import phase1.P1ConnectionTransformation;
-import phase1.P1Geometry;
 
 /**
  *
@@ -40,13 +40,13 @@ public class VolumeRendererDemo {
         Graphics2D g2 = (Graphics2D) g;
 
         new VolumeRenderer().render(volume, 0, g2);
-        new ConnectionRenderer().render(P1ConnectionTransformation.create(Point3i.ZERO, P1Geometry.WEST), g2);
-        new ConnectionRenderer().render(P1ConnectionTransformation.create(Point3i.create(2, 3, 0), P1Geometry.EAST), g2);
-        new ConnectionRenderer().render(P1ConnectionTransformation.create(Point3i.create(2, 1, 0), P1Geometry.NORTH), g2);
-        new ConnectionRenderer().render(P1ConnectionTransformation.create(Point3i.create(0, 0, 0), P1Geometry.SOUTH), g2);
+        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.ZERO, V3Geometry.WEST), g2);
+        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 3, 0), V3Geometry.EAST), g2);
+        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 1, 0), V3Geometry.NORTH), g2);
+        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(0, 0, 0), V3Geometry.SOUTH), g2);
 
         new VolumeRenderer().render(new Volume3i(ImmutableList.of(Point3i.create(2,0,0))), 0, g2);
-        new ConnectionRenderer().render(P1ConnectionTransformation.create(Point3i.create(2, 0, 0), P1Geometry.SOUTH), g2);
+        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 0, 0), V3Geometry.SOUTH), g2);
       }
     };
 
