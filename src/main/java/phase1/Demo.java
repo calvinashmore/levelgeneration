@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.icosilune.levelgeneration1;
+package phase1;
 
 import com.google.common.collect.ImmutableList;
 import generation.v3room.V3ConnectionTransformation;
@@ -18,12 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import math3i.Point3i;
 import math3i.Volume3i;
-import phase1.P1ConnectionTemplate;
-import phase1.P1ContainerProgress;
-import phase1.P1Room;
-import phase1.P1RoomGenerator;
-import phase1.P1RoomTemplate;
-import phase1.P1RoomTemplateGenerator;
 import generation.v3room.renderer.ConnectionRenderer;
 import generation.v3room.renderer.GraphRenderer;
 import generation.v3room.renderer.VolumeRenderer;
@@ -33,7 +27,7 @@ import util.PrioritizedCollection;
  *
  * @author ashmore
  */
-public class LevelGeneration {
+public class Demo {
 
   private static final int ROOM_SIZE = 9;
 
@@ -103,8 +97,8 @@ public class LevelGeneration {
     container.addParentConnection(P1ConnectionTemplate.placement(
             P1ConnectionTemplate.DOOR_1, Point3i.create(ROOM_SIZE-1,3,0), V3Geometry.EAST));
 
-    container.addParentConnection(P1ConnectionTemplate.placement(
-            P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), V3Geometry.WEST));
+//    container.addParentConnection(P1ConnectionTemplate.placement(
+//            P1ConnectionTemplate.DOOR_1, Point3i.create(0,3,0), V3Geometry.WEST));
 
     PrioritizedCollection<P1RoomTemplate> templates = new PrioritizedCollection<>();
     templates.addEntries(SINGLE_CELL_ROOM.generateTemplates(),
@@ -133,10 +127,8 @@ public class LevelGeneration {
   }
 
   private static void renderContainer(P1ContainerProgress container) {
-
     JFrame frame = new JFrame("wut");
     JPanel panel = new JPanel() {
-
       @Override
       protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

@@ -47,23 +47,8 @@ public abstract class V3RoomTemplateGenerator<T extends V3Room<T,?,K>, K extends
     return hasDoor && !hasAdjacentDoors;
   }
 
-//  @Override
-//  protected RoomTemplate<T, K> createTemplate(Set<ConnectionPlacement<P1Room, P1KeyType>> placements) {
-//    return P1RoomTemplate.create((V3Geometry<P1Room>) getGeometry(), placements);
-//  }
-
   @Override
   public List<? extends V3RoomTemplate<T,K>> generateTemplates() {
     return (List<V3RoomTemplate<T,K>>) super.generateTemplates();
   }
-
-//  @Override
-//  public V3RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, ConnectionTemplate<P1Room, P1KeyType>... connections) {
-//    return (V3RoomTemplateGenerator) super.addConnections(transform, connections);
-//  }
-//
-//  @Override
-//  public V3RoomTemplateGenerator addConnections(ConnectionTransformation<P1Room> transform, Iterable<ConnectionTemplate<P1Room, P1KeyType>> connections) {
-//    return (V3RoomTemplateGenerator) super.addConnections(transform, connections);
-//  }
 }

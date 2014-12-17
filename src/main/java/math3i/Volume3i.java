@@ -19,6 +19,7 @@ import java.util.Set;
 public class Volume3i {
 
   public static final Volume3i EMPTY = new Volume3i(ImmutableSet.<Point3i>of());
+  public static final Volume3i UNIT_BOX = new Volume3i(ImmutableSet.<Point3i>of(Point3i.ZERO));
 
   /**
    * Returns a box whose dimensions in [0,wx) x [0,wy) x [0,wz)
