@@ -8,6 +8,7 @@ package util;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
@@ -71,6 +72,11 @@ public class PrioritizedCollection<T> {
     return entries.stream().map(Entry::getValue).collect(Collectors.toList());
   }
 
+  @Nullable
+  public T choose(Random random) {
+    return choose(Predicates.alwaysTrue(), random);
+  }
+
   /**
    * Returns null iff the predicate is false for all entries.
    */
@@ -119,7 +125,7 @@ public class PrioritizedCollection<T> {
     public abstract int getPriority();
 
     public static <T> Entry<T> create(T value, double weight, int priority) {
-      Preconditions.checkArgument(weight > 0, "Can not have weight less than or equal to zero");
+      Preconditions.checkArgument(weight >= 0, "Can not have weight less than zero");
       Preconditions.checkArgument(priority >= 0, "Can not have priority less than zero");
       return new AutoValue_PrioritizedCollection_Entry(value, weight, priority);
     }

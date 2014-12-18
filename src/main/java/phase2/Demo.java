@@ -5,6 +5,8 @@
  */
 package phase2;
 
+import com.google.common.collect.ImmutableSet;
+import generation.ConnectionPlacement;
 import generation.v3room.V3ConnectionTransformation;
 import generation.v3room.V3Geometry;
 import generation.v3room.renderer.ConnectionRenderer;
@@ -16,8 +18,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.util.Random;
+import javax.annotation.concurrent.Immutable;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import math3i.Point3i;
 import math3i.Transformation3i;
 import math3i.Volume3i;
 
@@ -32,19 +36,36 @@ public class Demo {
           P2ConnectionTemplate.GRASS, P2ConnectionTemplate.GRASS,
           P2ConnectionTemplate.GRASS, P2ConnectionTemplate.GRASS);
 
-  private static final P2RoomTemplate CREEK_STRAIGHT = P2RoomTemplate.create(P2ConnectionTemplate.CREEK_IN, P2ConnectionTemplate.GRASS,
+  private static final P2RoomTemplate CREEK_STRAIGHT_1 = P2RoomTemplate.create(
+          P2ConnectionTemplate.CREEK_IN, P2ConnectionTemplate.GRASS,
           P2ConnectionTemplate.CREEK_OUT, P2ConnectionTemplate.GRASS);
 
-  private static final P2RoomTemplate CREEK_ELBOW = P2RoomTemplate.create(P2ConnectionTemplate.CREEK_IN, P2ConnectionTemplate.CREEK_OUT,
+  private static final P2RoomTemplate CREEK_TO_EDGE = P2RoomTemplate.create(
+          P2ConnectionTemplate.CREEK_IN, P2ConnectionTemplate.GRASS,
+          P2ConnectionTemplate.NONE, P2ConnectionTemplate.GRASS);
+
+  private static final P2RoomTemplate CREEK_STRAIGHT_2 = P2RoomTemplate.create(V3Geometry.create(Volume3i.box(2, 1, 1)), ImmutableSet.of(
+          ConnectionPlacement.create(P2ConnectionTemplate.CREEK_IN, V3Geometry.connection(Point3i.ZERO, V3Geometry.WEST)),
+          ConnectionPlacement.create(P2ConnectionTemplate.GRASS, V3Geometry.connection(Point3i.ZERO, V3Geometry.NORTH)),
+          ConnectionPlacement.create(P2ConnectionTemplate.GRASS, V3Geometry.connection(Point3i.ZERO, V3Geometry.SOUTH)),
+          ConnectionPlacement.create(P2ConnectionTemplate.CREEK_OUT, V3Geometry.connection(Point3i.create(1, 0, 0), V3Geometry.EAST)),
+          ConnectionPlacement.create(P2ConnectionTemplate.GRASS, V3Geometry.connection(Point3i.create(1,0,0), V3Geometry.NORTH)),
+          ConnectionPlacement.create(P2ConnectionTemplate.GRASS, V3Geometry.connection(Point3i.create(1,0,0), V3Geometry.SOUTH))
+          ));
+
+  private static final P2RoomTemplate CREEK_ELBOW = P2RoomTemplate.create(
+          P2ConnectionTemplate.CREEK_IN, P2ConnectionTemplate.CREEK_OUT,
           P2ConnectionTemplate.GRASS, P2ConnectionTemplate.GRASS);
 
   public static void main(String args[]){
     P2ContainerProgress container = new P2ContainerProgress(Volume3i.box(ROOM_SIZE, ROOM_SIZE, 1));
     FinitePrioritizedCollection<P2RoomTemplate> templates = new FinitePrioritizedCollection<>();
 
-    templates.addEntries(PLAINS, 1, 1, 4);
-    templates.addEntries(CREEK_STRAIGHT, 1, 1, 3);
-    templates.addEntries(CREEK_ELBOW, 1, 1, 3);
+    templates.addEntries(PLAINS, 1.0, 1, 4);
+    templates.addEntries(CREEK_STRAIGHT_1, 1.0, 1, 3);
+    templates.addEntries(CREEK_STRAIGHT_2, 2.0, 1, 3);
+    templates.addEntries(CREEK_ELBOW, 1.0, 1, 3);
+    templates.addEntries(CREEK_TO_EDGE, 1.0, 1, 1);
 
     container.addChild(P2Room.create(PLAINS,
             V3Geometry.V3GeometryTransformation.create(Transformation3i.translation(ROOM_SIZE/2, ROOM_SIZE/2, 0))));

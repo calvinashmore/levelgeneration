@@ -37,11 +37,26 @@ public enum P2ConnectionTemplate implements ConnectionTemplate<P2Room, P2KeyType
   @Override
   public int getMatchPriority() {
     switch(this) {
-    case CREEK_IN:
-    case CREEK_OUT:
-      return 2;
-    default:
-      return 1;
+      case NONE:
+        return 0;
+      case CREEK_IN:
+      case CREEK_OUT:
+        return 1;
+      default:
+        return 1;
+    }
+  }
+
+  /**
+   * True if this represents a feature that continues across tiles, and runs the risk of being unmatched.
+   */
+  public boolean isFeature() {
+    switch(this) {
+      case CREEK_IN:
+      case CREEK_OUT:
+        return true;
+      default:
+        return false;
     }
   }
 

@@ -29,7 +29,7 @@ import util.PrioritizedCollection;
  */
 public class Demo {
 
-  private static final int ROOM_SIZE = 9;
+  private static final int ROOM_SIZE = 12;
 
   private static final P1RoomTemplateGenerator SINGLE_CELL_ROOM = new P1RoomTemplateGenerator(V3Geometry.create(Volume3i.box(1, 1, 1)))
           .addConnections(V3Geometry.connection(Point3i.ZERO, V3Geometry.EAST), P1ConnectionTemplate.DOOR_1)

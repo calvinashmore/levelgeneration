@@ -84,6 +84,11 @@ public abstract class V3RoomGenerator<Parent extends Room<Parent,T,?>, T extends
 
   protected abstract T createRoom(V3RoomTemplate<T,K> template, V3Geometry.V3GeometryTransformation<T> xform);
 
+  protected V3Geometry.V3GeometryTransformation<T> chooseTransform(V3RoomTemplate<T, K> roomTemplate,
+          List<V3Geometry.V3GeometryTransformation<T>> allowableTransforms, Random random) {
+    return allowableTransforms.get(random.nextInt(allowableTransforms.size()));
+  }
+
   @Override
   @Nullable
   public T generateRoom() {
@@ -91,7 +96,8 @@ public abstract class V3RoomGenerator<Parent extends Room<Parent,T,?>, T extends
     V3ContainerProgress parent = getInProgressParent();
     List<ConnectionPlacement<T, K>> highestPriorityConnectionPlacements =
             parent.getHighestPriorityConnections();
-    List<V3ConnectionTransformation<T>> highestPriorityConnections = highestPriorityConnectionPlacements.stream()
+    List<V3ConnectionTransformation<T>> highestPriorityConnections =
+        highestPriorityConnectionPlacements.stream()
             .map(placement -> (V3ConnectionTransformation<T>) placement.getTransform())
             .collect(Collectors.toList());
 
@@ -104,14 +110,14 @@ public abstract class V3RoomGenerator<Parent extends Room<Parent,T,?>, T extends
         getTemplates().getAllValues().stream()
             .collect(Collectors.toMap(Function.identity(), t -> getPossibleTransformations(t, highestPriorityConnections)));
 
-    V3RoomTemplate chosenTemplate = (V3RoomTemplate) getTemplates().choose(
+    V3RoomTemplate<T,K> chosenTemplate = getTemplates().choose(
             t -> !templateToTransforms.get(t).isEmpty(), random);
     if(chosenTemplate == null) {
       return null;
     }
 
     List<V3Geometry.V3GeometryTransformation<T>> allowableTransforms = templateToTransforms.get(chosenTemplate);
-    V3Geometry.V3GeometryTransformation<T> transform = allowableTransforms.get(random.nextInt(allowableTransforms.size()));
+    V3Geometry.V3GeometryTransformation<T> transform = chooseTransform(chosenTemplate, allowableTransforms, random);
 
     return (T) createRoom(chosenTemplate, transform);
   }

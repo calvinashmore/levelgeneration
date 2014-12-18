@@ -32,7 +32,7 @@ public class PrioritizedCollectionTest {
     collection.addEntry(obj2, 1.0, 2);
 
     Mockito.when(mockRandom.nextDouble()).thenReturn(0.0);
-    Assert.assertEquals(obj2, collection.choose(Predicates.alwaysTrue(), mockRandom));
+    Assert.assertEquals(obj2, collection.choose(mockRandom));
   }
 
   @Test
