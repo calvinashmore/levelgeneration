@@ -18,9 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import math3i.Point3i;
 import math3i.Volume3i;
-import generation.v3room.renderer.ConnectionRenderer;
-import generation.v3room.renderer.GraphRenderer;
-import generation.v3room.renderer.VolumeRenderer;
+import generation.v3room.renderer.RendererFactory;
 import util.PrioritizedCollection;
 
 /**
@@ -136,7 +134,7 @@ public class Demo {
         AffineTransform transform = g2.getTransform();
         g2.scale(5.0/ROOM_SIZE, 5.0/ROOM_SIZE);
         container.getChildren().forEach(room -> renderRoom(g2, room));
-        GRAPH_RENDERER.render(container.buildConnectionGraph(), g2);
+        RF.newGraphRenderer().render(container.buildConnectionGraph(), g2);
         g2.setTransform(transform);
       }
     };
@@ -149,17 +147,15 @@ public class Demo {
     frame.setVisible(true);
   }
 
-  private static final VolumeRenderer VOLUME_RENDERER = new VolumeRenderer();
-  private static final ConnectionRenderer CONNECTION_RENDERER = new ConnectionRenderer();
-  private static final GraphRenderer GRAPH_RENDERER = new GraphRenderer();
+  private static final RendererFactory RF = new RendererFactory();
 
   private static void renderRoom(Graphics2D g, P1Room room) {
 
-    VOLUME_RENDERER.render(room.getTransformedGeometry().getVolume(), 0, g);
+    RF.newVolumeRenderer().render(room.getTransformedGeometry().getVolume(), 0, g);
     room.getConnectionPlacements().stream()
             .filter((generation.ConnectionPlacement<phase1.P1Room, phase1.P1KeyType> placement) -> placement.getConnection() != P1ConnectionTemplate.WALL)
             .forEach((generation.ConnectionPlacement<phase1.P1Room, phase1.P1KeyType> placement) -> {
-      CONNECTION_RENDERER.render((V3ConnectionTransformation) placement.getTransform(), g);
+      RF.newConnectionRenderer().render((V3ConnectionTransformation) placement.getTransform(), g);
     });
   }
 }

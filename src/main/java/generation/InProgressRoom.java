@@ -7,11 +7,13 @@ package generation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -249,5 +251,21 @@ public abstract class InProgressRoom<
     }
 
     return graph;
+  }
+
+  /**
+   * Returns the children who have a connection at the given transform.
+   * Should return 0, 1 or 2 results. 0 implies that the connection is not present. 1 implies that the connection is open.
+   * 2 implies the connection is filled.
+   */
+  public Set<Child> getChildrenAtConnection(ConnectionTransformation<Child> connection) {
+    Set<Child> childrenAtConnection = new HashSet<>();
+
+    getChildren().stream().filter((child) -> (child.getConnectionPlacements().stream()
+        .anyMatch(placement -> placement.getTransform().matches(connection)))).forEach((child) -> {
+          childrenAtConnection.add(child);
+        });
+
+    return ImmutableSet.copyOf(childrenAtConnection);
   }
 }

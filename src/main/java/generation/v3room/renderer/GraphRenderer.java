@@ -24,11 +24,11 @@ public class GraphRenderer {
   private final int lineWidth;
   private final Color lineColor;
 
-  public GraphRenderer() {
-    this(100, 10, 1, Color.GRAY);
-  }
+//  public GraphRenderer() {
+//    this(100, 10, 1, Color.GRAY);
+//  }
 
-  public GraphRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
+  GraphRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
     this.cellSize = cellSize;
     this.borderSize = borderSize;
     this.lineWidth = lineWidth;

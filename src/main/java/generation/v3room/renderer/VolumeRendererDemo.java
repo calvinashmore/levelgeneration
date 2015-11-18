@@ -39,14 +39,16 @@ public class VolumeRendererDemo {
       protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
 
-        new VolumeRenderer().render(volume, 0, g2);
-        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.ZERO, V3Geometry.WEST), g2);
-        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 3, 0), V3Geometry.EAST), g2);
-        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 1, 0), V3Geometry.NORTH), g2);
-        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(0, 0, 0), V3Geometry.SOUTH), g2);
+        RendererFactory rf = new RendererFactory();
 
-        new VolumeRenderer().render(new Volume3i(ImmutableList.of(Point3i.create(2,0,0))), 0, g2);
-        new ConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 0, 0), V3Geometry.SOUTH), g2);
+        rf.newVolumeRenderer().render(volume, 0, g2);
+        rf.newConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.ZERO, V3Geometry.WEST), g2);
+        rf.newConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 3, 0), V3Geometry.EAST), g2);
+        rf.newConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 1, 0), V3Geometry.NORTH), g2);
+        rf.newConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(0, 0, 0), V3Geometry.SOUTH), g2);
+
+        rf.newVolumeRenderer().render(new Volume3i(ImmutableList.of(Point3i.create(2,0,0))), 0, g2);
+        rf.newConnectionRenderer().render(V3ConnectionTransformation.create(Point3i.create(2, 0, 0), V3Geometry.SOUTH), g2);
       }
     };
 

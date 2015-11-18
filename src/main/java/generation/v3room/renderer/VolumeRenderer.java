@@ -25,12 +25,12 @@ public class VolumeRenderer {
   private final int borderSize;
   private final int lineWidth;
   private final Color lineColor;
+//
+//  public VolumeRenderer() {
+//    this(100, 10, 3, Color.BLACK);
+//  }
 
-  public VolumeRenderer() {
-    this(100, 10, 3, Color.BLACK);
-  }
-
-  public VolumeRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
+  VolumeRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
     this.cellSize = cellSize;
     this.borderSize = borderSize;
     this.lineWidth = lineWidth;

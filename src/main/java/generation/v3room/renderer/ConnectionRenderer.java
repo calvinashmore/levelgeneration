@@ -22,11 +22,11 @@ public class ConnectionRenderer {
   private final int lineWidth;
   private final Color lineColor;
 
-  public ConnectionRenderer() {
-    this(100, 10, 3, Color.BLUE);
-  }
+//  public ConnectionRenderer() {
+//    this(100, 10, 3, Color.BLUE);
+//  }
 
-  public ConnectionRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
+  ConnectionRenderer(int cellSize, int borderSize, int lineWidth, Color lineColor) {
     this.cellSize = cellSize;
     this.borderSize = borderSize;
     this.lineWidth = lineWidth;
